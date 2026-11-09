@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Las chucherías de Becca | Pastelería y Repostería Personalizada en Toluca</title>
+  <meta name="description" content="Pasteles personalizados, temáticos y repostería artesanal en Toluca y Metepec. Cotiza tu pastel para eventos especiales con Rebecca Sánchez." />
+
+  <!-- Google Fonts: Poppins (Encabezados) + Inter (Cuerpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN con configuración personalizada -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Poppins', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            unicorn: {
+              50: '#FDFBFE',
+              100: '#FAF5FF', // Morado pastel ultraligero
+              200: '#F3E8FF', // Lavanda pastel
+              300: '#E9D5FF', // Lila pastel
+              pinkLight: '#FDF2F8', // Rosa pastel suave
+              pink: '#FCE7F3', // Rosa pastel
+              pinkAccent: '#F472B6', // Rosa acento elegante
+              purpleAccent: '#9333EA', // Morado acento
+              dark: '#1E1B4B', // Contraste accesible para texto principal
+              muted: '#6B7280', // Texto secundario
+            }
+          },
+          boxShadow: {
+            'soft': '0 10px 25px -5px rgba(233, 213, 255, 0.4), 0 8px 10px -6px rgba(252, 231, 243, 0.4)',
+            'card': '0 4px 20px -2px rgba(147, 51, 234, 0.06)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilos auxiliares para scrollbar y animaciones */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FDFBFE;
+      color: #1E1B4B;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Poppins', sans-serif;
+    }
+    .gradient-unicorn-text {
+      background: linear-gradient(135deg, #9333EA 0%, #DB2777 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-unicorn-bg {
+      background: linear-gradient(135deg, #FAF5FF 0%, #FDF2F8 50%, #FAF5FF 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-pink-200 selection:text-purple-900">
+
+  <!-- ================================================================= -->
+  <!-- NAVEGACIÓN (Mobile-First) -->
+  <!-- ================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-purple-100 transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2.5">
+        <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-200 to-pink-200 flex items-center justify-center text-xl shadow-sm">
+          🧁
+        </span>
+        <div>
+          <span class="font-heading font-bold text-lg sm:text-xl text-unicorn-dark leading-tight block">
+            Las chucherías de Becca
+          </span>
+          <span class="text-xs text-purple-700 font-medium tracking-wide block">
+            Toluca, Edo. Méx.
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-unicorn-dark">
+        <a href="#galeria" class="hover:text-purple-600 transition-colors">Portafolio</a>
+        <a href="#pedidos" class="hover:text-purple-600 transition-colors">Cotizar</a>
+        <a href="#contacto" class="hover:text-purple-600 transition-colors">Ubicación</a>
+      </nav>
+
+      <!-- Botón CTA directo -->
+      <div class="flex items-center gap-3">
+        <a 
+          href="#pedidos" 
+          class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-heading font-semibold text-xs sm:text-sm shadow-soft transition-all transform active:scale-95"
+        >
+          Cotizar pedido
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- HERO SECTION -->
+  <!-- ================================================================= -->
+  <section class="relative overflow-hidden gradient-unicorn-bg pt-12 pb-16 sm:pt-20 sm:pb-24 border-b border-purple-100/60">
+    <!-- Círculos decorativos sutiles en tonos pastel -->
+    <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-purple-200/40 blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 -right-24 w-96 h-96 rounded-full bg-pink-200/40 blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        
+        <!-- Columna de Texto -->
+        <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 border border-purple-200 shadow-sm text-xs font-semibold text-purple-800">
+            <span class="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
+            Pastelería de diseño 100% personalizada
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-unicorn-dark tracking-tight leading-tight">
+            El paraíso de los <span class="gradient-unicorn-text">postres</span> y pasteles mágicos
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-600 font-normal max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            Convertimos las temáticas favoritas de tus eventos en pasteles artesanales inolvidables. Hechos a mano con amor por <strong>Rebecca Sánchez</strong> en Toluca y Metepec.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <a 
+              href="#pedidos" 
+              class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-heading font-semibold text-base shadow-soft transition-all text-center"
+            >
+              Cotizar pedido ahora
+            </a>
+            <a 
+              href="#galeria" 
+              class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-white hover:bg-purple-50 text-unicorn-dark font-heading font-semibold text-base border border-purple-200 shadow-sm transition-all text-center"
+            >
+              Explorar galería
+            </a>
+          </div>
+
+          <!-- Micro-insignias de confianza -->
+          <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-600">
+            <div class="flex items-center gap-1.5">
+              <span class="text-pink-500">✨</span> Diseños exclusivos
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-purple-500">📍</span> El Oro 112, Toluca
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-pink-500">🧁</span> +1,500 seguidores felices
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna de Imagen Destacada -->
+        <div class="lg:col-span-5 relative">
+          <div class="relative mx-auto max-w-sm sm:max-w-md lg:max-w-none">
+            <!-- Marco decorativo en pastel suave -->
+            <div class="absolute -inset-3 rounded-3xl bg-gradient-to-tr from-purple-200 via-pink-200 to-purple-100 transform rotate-2 blur-sm"></div>
+            
+            <div class="relative rounded-2xl overflow-hidden shadow-soft border-4 border-white bg-white">
+              <img 
+                src="https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=800&q=85" 
+                alt="Pastel personalizado de unicornio y fantasía decorado artesanalmente" 
+                class="w-full h-80 sm:h-96 object-cover transform hover:scale-105 transition-transform duration-700"
+                loading="eager"
+              />
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-4 text-white">
+                <span class="text-xs font-semibold uppercase tracking-wider bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full">
+                  Diseño de temporada
+                </span>
+                <p class="font-heading font-bold text-sm sm:text-base mt-1">Pastel temático artesanal con flores y texturas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- GALERÍA / PORTAFOLIO (Masonry / Cuadrícula Limpia con Lazy Loading) -->
+  <!-- ================================================================= -->
+  <section id="galeria" class="py-16 sm:py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-pink-600 bg-pink-100 px-3 py-1 rounded-full inline-block">
+          Portafolio Artesanal
+        </span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-unicorn-dark tracking-tight">
+          Nuestras Creaciones Temáticas
+        </h2>
+        <p class="text-slate-600 text-sm sm:text-base">
+          Cada pastel cuenta una historia única. Haz clic sobre cualquier diseño para inspirarte en tu cotización.
+        </p>
+      </div>
+
+      <!-- Filtros de categoría -->
+      <div class="flex items-center justify-center gap-2 overflow-x-auto pb-4 mb-8 text-xs sm:text-sm" id="galeria-filtros">
+        <button data-cat="todos" class="galeria-filter-btn px-4 py-2 rounded-full font-semibold transition-all bg-purple-600 text-white shadow-sm">
+          Todos
+        </button>
+        <button data-cat="dinosaurios" class="galeria-filter-btn px-4 py-2 rounded-full font-semibold transition-all bg-purple-50 text-slate-700 hover:bg-purple-100">
+          Dinosaurios & Selva
+        </button>
+        <button data-cat="infantiles" class="galeria-filter-btn px-4 py-2 rounded-full font-semibold transition-all bg-purple-50 text-slate-700 hover:bg-purple-100">
+          Infantiles
+        </button>
+        <button data-cat="cumpleanos" class="galeria-filter-btn px-4 py-2 rounded-full font-semibold transition-all bg-purple-50 text-slate-700 hover:bg-purple-100">
+          Cumpleaños
+        </button>
+        <button data-cat="chucherias" class="galeria-filter-btn px-4 py-2 rounded-full font-semibold transition-all bg-purple-50 text-slate-700 hover:bg-purple-100">
+          Bocadillos & Chucherías
+        </button>
+      </div>
+
+      <!-- Contenedor de la Cuadrícula / Galería (Cargado dinámicamente desde Firestore) -->
+      <div id="galeria-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Renderizado por app.js con lazy loading -->
+        <div class="col-span-full text-center py-12 text-slate-400">
+          <div class="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+          <p class="text-sm">Cargando creaciones de Becca...</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- FORMULARIO DE PEDIDOS Y COTIZACIÓN (Mobile-First y Sanitizado) -->
+  <!-- ================================================================= -->
+  <section id="pedidos" class="py-16 sm:py-24 gradient-unicorn-bg border-t border-purple-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center space-y-3 mb-10">
+        <span class="text-xs font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-3 py-1 rounded-full inline-block">
+          Aparta tu fecha
+        </span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-unicorn-dark tracking-tight">
+          Cotiza tu Pastel Soñado
+        </h2>
+        <p class="text-slate-600 text-sm sm:text-base">
+          Llena el formulario y Rebeca se pondrá en contacto contigo vía WhatsApp para afinar los detalles y cotización.
+        </p>
+      </div>
+
+      <!-- Card del Formulario -->
+      <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-soft border border-purple-100">
+        
+        <!-- Notificaciones de estado (Éxito / Error) -->
+        <div id="form-alert" class="hidden mb-6 p-4 rounded-2xl text-sm font-medium transition-all" role="alert"></div>
+
+        <form id="order-form" class="space-y-6" novalidate>
+          
+          <!-- CAMPO HONEYPOT ANTI-SPAM (Invisible para humanos, bots lo rellenan) -->
+          <div class="hidden" aria-hidden="true">
+            <label for="honeypot_check">No llenar si eres humano</label>
+            <input type="text" id="honeypot_check" name="honeypot_check" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <!-- Nombre Completo -->
+          <div>
+            <label for="client_name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              Nombre Completo *
+            </label>
+            <input 
+              type="text" 
+              id="client_name" 
+              name="client_name" 
+              required 
+              maxlength="80" 
+              placeholder="Ej. María Fernanda González" 
+              class="w-full px-4 py-3 rounded-xl border border-purple-200 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none text-slate-800 text-sm transition-all"
+            />
+          </div>
+
+          <!-- Teléfono / WhatsApp -->
+          <div>
+            <label for="client_phone" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              WhatsApp (10 dígitos) *
+            </label>
+            <input 
+              type="tel" 
+              id="client_phone" 
+              name="client_phone" 
+              required 
+              pattern="[0-9]{10}" 
+              maxlength="10" 
+              placeholder="Ej. 7221234567" 
+              class="w-full px-4 py-3 rounded-xl border border-purple-200 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none text-slate-800 text-sm transition-all"
+            />
+            <span class="text-[11px] text-slate-500 mt-1 block">Nos comunicaremos directamente a este número para confirmar tu diseño.</span>
+          </div>
+
+          <!-- Grid: Fecha del Evento y Número de Personas -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label for="event_date" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Fecha del Evento *
+              </label>
+              <input 
+                type="date" 
+                id="event_date" 
+                name="event_date" 
+                required 
+                class="w-full px-4 py-3 rounded-xl border border-purple-200 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none text-slate-800 text-sm transition-all"
+              />
+              <span class="text-[11px] text-purple-700 mt-1 block font-medium">Recomendado: mínimo 48 horas de anticipación.</span>
+            </div>
+
+            <div>
+              <label for="portions" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                Porciones estimadas
+              </label>
+              <select 
+                id="portions" 
+                name="portions" 
+                class="w-full px-4 py-3 rounded-xl border border-purple-200 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none text-slate-800 text-sm transition-all bg-white"
+              >
+                <option value="10-15 personas">10 - 15 personas (Chico)</option>
+                <option value="15-20 personas">15 - 20 personas (Mediano)</option>
+                <option value="25-30 personas">25 - 30 personas (Grande)</option>
+                <option value="35+ personas">35 o más personas (Especial)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Temática del Pastel -->
+          <div>
+            <label for="cake_theme" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              Temática del Pastel o Postre *
+            </label>
+            <input 
+              type="text" 
+              id="cake_theme" 
+              name="cake_theme" 
+              required 
+              maxlength="120" 
+              placeholder="Ej. Dinosaurio Rex tierno, Unicornio pastel, Safari, Flores naturales..." 
+              class="w-full px-4 py-3 rounded-xl border border-purple-200 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none text-slate-800 text-sm transition-all"
+            />
+          </div>
+
+          <!-- Ideas, Sabores o Especificaciones -->
+          <div>
+            <label for="cake_notes" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              Ideas, Sabores deseados o Notas extras
+            </label>
+            <textarea 
+              id="cake_notes" 
+              name="cake_notes" 
+              rows="3" 
+              maxlength="500" 
+              placeholder="Ej. Me gustaría pan de chocolate con relleno de frambuesa, decorado con merengue en tonos lila y dorado..." 
+              class="w-full px-4 py-3 rounded-xl border border-purple-200 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none text-slate-800 text-sm transition-all"
+            ></textarea>
+          </div>
+
+          <!-- Botón de Envío -->
+          <button 
+            type="submit" 
+            id="submit-btn" 
+            class="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white font-heading font-semibold text-base shadow-soft transition-all transform active:scale-98 flex items-center justify-center gap-2"
+          >
+            <span>Enviar cotización a Becca</span>
+            <span id="btn-spinner" class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          </button>
+
+          <p class="text-center text-xs text-slate-400 mt-2">
+            🔒 Tus datos se envían de forma segura a nuestro registro de pedidos. Sin spam.
+          </p>
+
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- UBICACIÓN Y CONTACTO -->
+  <!-- ================================================================= -->
+  <section id="contacto" class="py-16 sm:py-24 bg-white border-t border-purple-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Info de Contacto -->
+        <div class="lg:col-span-6 space-y-6">
+          <span class="text-xs font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-3 py-1 rounded-full inline-block">
+            Encuéntranos en Toluca
+          </span>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-unicorn-dark tracking-tight">
+            Hecho a mano en el corazón de Toluca
+          </h2>
+          <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Preparamos cada pedido bajo encargo garantizando máxima frescura y calidad de ingredientes. Puedes recoger personalmente en nuestro taller o solicitar entrega a domicilio en la zona metropolitana de Toluca y Metepec.
+          </p>
+
+          <div class="space-y-4 pt-2">
+            <!-- Dirección -->
+            <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-purple-50/60 border border-purple-100">
+              <span class="text-2xl">📍</span>
+              <div>
+                <h4 class="font-heading font-bold text-sm text-unicorn-dark">Dirección de Taller / Recolección</h4>
+                <p class="text-slate-600 text-xs sm:text-sm mt-0.5">El Oro 112, Toluca, Estado de México, CP 50020</p>
+              </div>
+            </div>
+
+            <!-- Horarios -->
+            <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-pink-50/60 border border-pink-100">
+              <span class="text-2xl">🕒</span>
+              <div>
+                <h4 class="font-heading font-bold text-sm text-unicorn-dark">Horario de Entregas</h4>
+                <p class="text-slate-600 text-xs sm:text-sm mt-0.5">Lunes a Sábado: 10:00 AM - 7:00 PM | Domingo: Bajo agenda previa</p>
+              </div>
+            </div>
+
+            <!-- Instagram y WhatsApp -->
+            <div class="flex flex-wrap gap-3 pt-2">
+              <a 
+                href="https://instagram.com/laschucheriasdebecca" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-xs shadow-sm hover:opacity-95 transition-opacity"
+              >
+                <span>📷</span>
+                <span>@laschucheriasdebecca</span>
+              </a>
+
+              <a 
+                href="https://wa.me/527225628061?text=Hola%20Becca,%20vi%20tu%20página%20web%20y%20me%20gustaría%20cotizar%20un%20pastel" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-sm transition-colors"
+              >
+                <span>💬</span>
+                <span>WhatsApp: +52 722 562 8061</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta Visual / Mapa Ilustrativo -->
+        <div class="lg:col-span-6">
+          <div class="rounded-3xl overflow-hidden border-2 border-purple-100 shadow-soft bg-purple-50 p-6 sm:p-8 text-center space-y-4">
+            <div class="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mx-auto text-3xl">
+              🗺️
+            </div>
+            <h3 class="font-heading font-bold text-lg text-unicorn-dark">Zona de Cobertura</h3>
+            <p class="text-slate-600 text-xs sm:text-sm max-w-md mx-auto">
+              Entregamos con cuidado en <strong>Toluca Centro, San Buenaventura, Metepec, Providencia, Galerías Metepec y alrededores</strong>.
+            </p>
+            <div class="pt-2">
+              <a 
+                href="https://maps.google.com/?q=El+Oro+112+Toluca+Estado+de+Mexico" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-semibold text-purple-700 hover:text-purple-900 underline"
+              >
+                Ver ubicación en Google Maps &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- FOOTER -->
+  <!-- ================================================================= -->
+  <footer class="mt-auto bg-unicorn-dark text-slate-300 py-10 border-t border-purple-900/40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="text-pink-400 font-bold">Las chucherías de Becca</span>
+        <span>•</span>
+        <span>El Oro 112, Toluca</span>
+      </div>
+      <p class="text-slate-400">
+        © <span id="footer-year"></span> Todos los derechos reservados. Repostería artesanal por Rebecca Sánchez.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ================================================================= -->
+  <!-- SCRIPTS: Firebase SDKs v10 (compat/modular) & Lógica de app.js -->
+  <!-- ================================================================= -->
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

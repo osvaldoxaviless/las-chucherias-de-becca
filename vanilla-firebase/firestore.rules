@@ -1,0 +1,122 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // FUNCIONES AUXILIARES DE CIBERSEGURIDAD Y RBAC (Role-Based Access Control)
+    // =========================================================================
+
+    /**
+     * Verifica si el usuario autenticado tiene rol de Administrador.
+     * Soporta:
+     * 1. Token personalizado con Claim de admin (recomendado para producción: { admin: true })
+     * 2. O coincidencia con el correo oficial registrado de Rebeca.
+     */
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email in [
+          "laschucheriasdebecca@gmail.com",
+          "rebecca.sanchez@laschucheriasdebecca.com"
+        ]
+      );
+    }
+
+    /**
+     * Validación estricta del esquema de datos para la colección 'pedidos'.
+     * Previene inyección de campos maliciosos, sobreescritura de metadatos
+     * y asegura integridad referencial en Firestore.
+     */
+    function isValidPedido(data) {
+      let incoming = data;
+
+      // 1. Debe contener los campos obligatorios
+      let hasRequiredKeys = incoming.keys().hasAll([
+        'clienteNombre',
+        'telefono',
+        'fechaEvento',
+        'tematica',
+        'estado',
+        'creadoEn'
+      ]);
+
+      // 2. No debe exceder la lista de campos permitidos (evita inyección de payload arbitrario)
+      let hasOnlyAllowedKeys = incoming.keys().hasOnly([
+        'clienteNombre',
+        'telefono',
+        'fechaEvento',
+        'porciones',
+        'tematica',
+        'detalles',
+        'estado',
+        'origen',
+        'creadoEn'
+      ]);
+
+      // 3. Validación de tipos y longitudes seguras
+      let validStrings = 
+        incoming.clienteNombre is string && 
+        incoming.clienteNombre.size() >= 3 && 
+        incoming.clienteNombre.size() <= 80 &&
+        incoming.telefono is string && 
+        incoming.telefono.size() >= 10 && 
+        incoming.telefono.size() <= 15 &&
+        incoming.fechaEvento is string && 
+        incoming.fechaEvento.size() <= 20 &&
+        incoming.tematica is string && 
+        incoming.tematica.size() >= 3 && 
+        incoming.tematica.size() <= 120;
+
+      // 4. Los pedidos públicos nuevos SIEMPRE deben crearse en estado 'nuevo'
+      let validInitialState = incoming.estado == 'nuevo';
+
+      return hasRequiredKeys && hasOnlyAllowedKeys && validStrings && validInitialState;
+    }
+
+    /**
+     * Validación de esquema para elementos de la Galería (subidos por Admin)
+     */
+    function isValidGaleriaItem(data) {
+      return data.keys().hasAll(['titulo', 'categoria', 'imagen', 'descripcion']) &&
+             data.titulo is string && data.titulo.size() <= 100 &&
+             data.imagen is string && data.imagen.size() <= 1000 &&
+             data.categoria is string &&
+             data.categoria in ['dinosaurios', 'infantiles', 'cumpleanos', 'chucherias', 'bodas', 'todos'];
+    }
+
+    // =========================================================================
+    // COLECCIÓN: 'pedidos' (Solicitudes de cotización de clientes)
+    // =========================================================================
+    match /pedidos/{pedidoId} {
+      
+      // CREATE: Público (Cualquier visitante puede enviar su pedido si cumple la validación)
+      allow create: if isValidPedido(request.resource.data);
+
+      // READ: Solo Rebeca (Admin) puede ver el listado de pedidos y datos de clientes
+      allow read: if isAdmin();
+
+      // UPDATE / DELETE: Solo Rebeca (Admin) puede actualizar estado (ej. de 'nuevo' a 'entregado') o eliminar
+      allow update, delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // COLECCIÓN: 'galeria' (Portafolio de fotos y postres)
+    // =========================================================================
+    match /galeria/{itemId} {
+      
+      // READ: Público (Cualquiera puede ver las fotos de la galería)
+      allow read: if true;
+
+      // CREATE / UPDATE / DELETE: Solo Rebeca (Admin) puede gestionar el portafolio
+      allow write: if isAdmin() && (request.resource == null || isValidGaleriaItem(request.resource.data));
+    }
+
+    // =========================================================================
+    // REGLA POR DEFECTO: Denegar todo lo demás
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+  }
+}

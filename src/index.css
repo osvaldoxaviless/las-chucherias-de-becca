@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-cream-paper: #f5f4f0;
+    --color-pure-white: #ffffff;
+    --color-ink-black: #000000;
+    --color-charcoal: #222222;
+    --color-slate: #333333;
+    --color-fog: #dddfe2;
+    --color-mint-splash: #99ffcc;
+    --color-plum-ink: #160042;
+    --color-aubergine: #26153f;
+    --color-sky-pop: #7bbbff;
+    --color-bubblegum: #ff99cc;
+    --color-peach-pop: #ffcc99;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    background-color: var(--color-cream-paper);
+    color: var(--color-ink-black);
+    font-family: 'Plus Jakarta Sans', Inter, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-recoleta {
+    font-family: 'DM Serif Display', 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.028em;
+  }
+}
+
+/* Subtle clean scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f4f0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #000000;
+  border-radius: 9999px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Hand-drawn mint swash highlight */
+.mint-swash {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.mint-swash::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: 2px;
+  height: 45%;
+  background-color: #99ffcc;
+  z-index: -1;
+  transform: rotate(-1deg);
+  border-radius: 4px;
+}
