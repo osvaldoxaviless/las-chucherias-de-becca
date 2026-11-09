@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search, ArrowRight, Plus } from 'lucide-react';
-import { Product, ProductCategory, CartItem, StoreConfig } from './types';
+import { Product, ProductCategory, CartItem, StoreConfig, PortfolioItem } from './types';
 import { INITIAL_PRODUCTS } from './data/products';
 import { DEFAULT_STORE_CONFIG } from './data/config';
+import { DEFAULT_PORTFOLIO_ITEMS } from './data/portfolio';
 import { BannerAnnouncement } from './components/BannerAnnouncement';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -21,12 +22,23 @@ import { LiveEditBar } from './components/LiveEditBar';
 import { QuickSettingsModal } from './components/QuickSettingsModal';
 import { AddProductModal } from './components/AddProductModal';
 import { ImageCropModal } from './components/ImageCropModal';
+import { CanvasBlockWrapper } from './components/CanvasBlockWrapper';
+import { BlocksOrganizerModal } from './components/BlocksOrganizerModal';
 import { 
   subscribeToProductsCloud, 
   saveProductsCloud, 
   subscribeToConfigCloud, 
   saveConfigCloud 
 } from './services/firebase';
+
+const BLOCK_DEFINITIONS: Record<string, { name: string; icon: string }> = {
+  hero: { name: 'Portada Hero', icon: '✨' },
+  catalog: { name: 'Catálogo de Postres', icon: '🧁' },
+  customizer: { name: 'Arma tu Pastel (Atelier)', icon: '🎂' },
+  portfolio: { name: 'Galería de Referencias', icon: '📸' },
+  about: { name: 'Sobre Becca (Nosotros)', icon: '👩🏻‍🍳' },
+  faq: { name: 'Preguntas Frecuentes', icon: '❓' },
+};
 
 export function App() {
   // Store config with localStorage persistence & resilient default hydration
@@ -92,14 +104,17 @@ export function App() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isQuickSettingsOpen, setIsQuickSettingsOpen] = useState(false);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+  const [isBlocksOrganizerOpen, setIsBlocksOrganizerOpen] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalSnapshot, setOriginalSnapshot] = useState<{ config: StoreConfig; products: Product[] } | null>(null);
 
-  // Image Cropping for in-place product photo change
+  // Image Cropping for in-place photo adjustments (products, cake tiers, portfolio references)
   const [cropModalData, setCropModalData] = useState<{
     isOpen: boolean;
     imageSrc: string | null;
     productId?: string;
+    tierId?: string;
+    portfolioId?: string;
     productName?: string;
   }>({
     isOpen: false,
@@ -343,6 +358,42 @@ export function App() {
     setToastMessage(`"${newProduct.name}" añadido al menú.`);
   };
 
+  const currentBlockOrder = (config.blockOrder && config.blockOrder.length > 0)
+    ? config.blockOrder
+    : ['hero', 'catalog', 'customizer', 'portfolio', 'about', 'faq'];
+
+  const currentHiddenBlocks = config.hiddenBlocks || [];
+
+  const handleMoveBlock = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= currentBlockOrder.length) return;
+
+    const newOrder = [...currentBlockOrder];
+    const [moved] = newOrder.splice(index, 1);
+    newOrder.splice(targetIndex, 0, moved);
+
+    setConfig((prev) => ({
+      ...prev,
+      blockOrder: newOrder,
+    }));
+    setHasUnsavedChanges(true);
+    setToastMessage(`Sección "${BLOCK_DEFINITIONS[moved]?.name || moved}" movida ${direction === 'up' ? 'arriba' : 'abajo'}.`);
+  };
+
+  const handleToggleHideBlock = (blockId: string) => {
+    setConfig((prev) => {
+      const hidden = prev.hiddenBlocks || [];
+      const updatedHidden = hidden.includes(blockId)
+        ? hidden.filter((id) => id !== blockId)
+        : [...hidden, blockId];
+      return {
+        ...prev,
+        hiddenBlocks: updatedHidden,
+      };
+    });
+    setHasUnsavedChanges(true);
+  };
+
   const handleTriggerChangeImageInLiveEdit = (product: Product) => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -365,6 +416,91 @@ export function App() {
     input.click();
   };
 
+  const handleTriggerChangeTierImage = (tierId: string) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        setCropModalData({
+          isOpen: true,
+          imageSrc: dataUrl,
+          tierId,
+          productName: `Pastel ${tierId}`,
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  };
+
+  const handleTriggerChangePortfolioImage = (item: PortfolioItem) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        setCropModalData({
+          isOpen: true,
+          imageSrc: dataUrl,
+          portfolioId: item.id,
+          productName: item.title,
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  };
+
+  const handleUpdatePortfolioItem = (updated: PortfolioItem) => {
+    setConfig((prev) => {
+      const items = (prev.portfolioItems && prev.portfolioItems.length > 0)
+        ? prev.portfolioItems
+        : DEFAULT_PORTFOLIO_ITEMS;
+      return {
+        ...prev,
+        portfolioItems: items.map((i) => (i.id === updated.id ? updated : i)),
+      };
+    });
+    setHasUnsavedChanges(true);
+  };
+
+  const handleDeletePortfolioItem = (id: string) => {
+    setConfig((prev) => {
+      const items = (prev.portfolioItems && prev.portfolioItems.length > 0)
+        ? prev.portfolioItems
+        : DEFAULT_PORTFOLIO_ITEMS;
+      return {
+        ...prev,
+        portfolioItems: items.filter((i) => i.id !== id),
+      };
+    });
+    setHasUnsavedChanges(true);
+    setToastMessage('Foto de referencia eliminada.');
+  };
+
+  const handleAddPortfolioItem = (newItem: PortfolioItem) => {
+    setConfig((prev) => {
+      const items = (prev.portfolioItems && prev.portfolioItems.length > 0)
+        ? prev.portfolioItems
+        : DEFAULT_PORTFOLIO_ITEMS;
+      return {
+        ...prev,
+        portfolioItems: [...items, newItem],
+      };
+    });
+    setHasUnsavedChanges(true);
+    setToastMessage(`"${newItem.title}" añadida a la galería de referencias.`);
+  };
+
   const handleSaveCroppedImageInLiveEdit = (croppedDataUrl: string) => {
     if (cropModalData.productId) {
       setProducts((prev) =>
@@ -372,6 +508,30 @@ export function App() {
       );
       setHasUnsavedChanges(true);
       setToastMessage('Foto del postre actualizada con éxito.');
+    } else if (cropModalData.tierId) {
+      setConfig((prev) => ({
+        ...prev,
+        customTierImages: {
+          ...(prev.customTierImages || {}),
+          [cropModalData.tierId!]: croppedDataUrl,
+        },
+      }));
+      setHasUnsavedChanges(true);
+      setToastMessage('Foto del tamaño de pastel actualizada con éxito.');
+    } else if (cropModalData.portfolioId) {
+      setConfig((prev) => {
+        const items = (prev.portfolioItems && prev.portfolioItems.length > 0)
+          ? prev.portfolioItems
+          : DEFAULT_PORTFOLIO_ITEMS;
+        return {
+          ...prev,
+          portfolioItems: items.map((i) =>
+            i.id === cropModalData.portfolioId ? { ...i, image: croppedDataUrl } : i
+          ),
+        };
+      });
+      setHasUnsavedChanges(true);
+      setToastMessage('Foto de referencia actualizada con éxito.');
     }
     setCropModalData({ isOpen: false, imageSrc: null });
   };
@@ -404,6 +564,7 @@ export function App() {
           onAddNewProduct={() => setIsAddProductOpen(true)}
           onOpenQuickSettings={() => setIsQuickSettingsOpen(true)}
           onOpenClassicPanel={() => setIsAdminOpen(true)}
+          onOpenBlocksOrganizer={() => setIsBlocksOrganizerOpen(true)}
           hasUnsavedChanges={hasUnsavedChanges}
         />
       )}
@@ -429,133 +590,174 @@ export function App() {
       />
 
       <main className="flex-1">
-        {/* Hatch Hero */}
-        <Hero
-          config={config}
-          onExploreCatalog={scrollToCatalog}
-          onScrollToCustomizer={scrollToCustomizer}
-          isEditMode={isEditMode}
-          onUpdateField={handleUpdateConfigField}
-        />
+        {currentBlockOrder.map((blockId, index) => {
+          const isHidden = currentHiddenBlocks.includes(blockId);
+          const blockDef = BLOCK_DEFINITIONS[blockId] || { name: blockId, icon: '📦' };
+          const isFirst = index === 0;
+          const isLast = index === currentBlockOrder.length - 1;
 
-        {/* Product Catalog Section */}
-        <section id="catalog-section" className="py-12 sm:py-16 max-w-6xl mx-auto px-4 sm:px-6">
-          
-          {/* Header & Search */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-black text-xs font-bold text-black mb-2">
-                <span>Catálogo Artesanal</span>
-              </div>
-              <h2 className="font-recoleta text-2xl sm:text-4xl font-bold text-black tracking-tight">
-                Menú de Postres & Antojos
-              </h2>
-              <p className="text-xs sm:text-sm text-[#222222] mt-0.5">
-                {products.length} especialidades horneadas al día en Toluca
-              </p>
-            </div>
+          let blockContent: React.ReactNode = null;
 
-            {/* Clean Search Input */}
-            <div className="relative w-full sm:w-64">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar en el menú o sabor..."
-                className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-black text-base sm:text-xs focus:outline-none bg-white placeholder:text-black/50"
+          if (blockId === 'hero') {
+            blockContent = (
+              <Hero
+                config={config}
+                onExploreCatalog={scrollToCatalog}
+                onScrollToCustomizer={scrollToCustomizer}
+                isEditMode={isEditMode}
+                onUpdateField={handleUpdateConfigField}
               />
-              <Search className="w-4 h-4 text-black absolute left-3 top-3.5" />
-            </div>
-          </div>
-
-          {/* Sticky Categories Bar */}
-          <div className="sticky top-16 sm:top-20 z-30 bg-[#f5f4f0]/95 backdrop-blur-xs py-2 mb-6 border-b border-black/10">
-            <CategoryFilter
-              activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
-              counts={categoryCounts}
-            />
-          </div>
-
-          {/* Product Grid - 2 columns on mobile */}
-          {filteredProducts.length === 0 && !isEditMode ? (
-            <div className="text-center py-16 bg-white rounded-card border border-black p-8 space-y-3">
-              <p className="font-bold text-sm text-black">
-                No encontramos postres con "{searchQuery}"
-              </p>
-              <button
-                onClick={() => { setSearchQuery(''); setActiveCategory('todos'); }}
-                className="px-4 py-2 rounded-btn bg-[#99ffcc] text-black font-bold text-xs border border-black"
-              >
-                Ver todo el menú
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredProducts.map((product) => {
-                const cartQty = cart
-                  .filter((item) => item.product.id === product.id)
-                  .reduce((sum, item) => sum + item.quantity, 0);
-
-                return (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    quantityInCart={cartQty}
-                    onAddToCart={handleAddToCart}
-                    onUpdateQuantity={handleUpdateProductQuantity}
-                    onOpenDetails={(p) => setSelectedProductForModal(p)}
-                    isEditMode={isEditMode}
-                    onUpdateProduct={handleUpdateProductInLiveEdit}
-                    onDeleteProduct={handleDeleteProductInLiveEdit}
-                    onToggleAvailability={handleToggleAvailabilityInLiveEdit}
-                    onTriggerChangeImage={handleTriggerChangeImageInLiveEdit}
-                  />
-                );
-              })}
-
-              {/* Add New Product Card in Live Edit Mode */}
-              {isEditMode && (
-                <div
-                  onClick={() => setIsAddProductOpen(true)}
-                  className="border-2 border-dashed border-black/40 hover:border-black rounded-card rounded-2xl p-6 flex flex-col items-center justify-center min-h-[260px] cursor-pointer bg-white/60 hover:bg-[#99ffcc]/20 transition-all text-center group active:scale-98"
-                >
-                  <div className="w-12 h-12 rounded-full bg-white border border-black flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-xs">
-                    <Plus className="w-6 h-6 text-black" />
+            );
+          } else if (blockId === 'catalog') {
+            blockContent = (
+              <section id="catalog-section" className="py-12 sm:py-16 max-w-6xl mx-auto px-4 sm:px-6">
+                {/* Header & Search */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-black text-xs font-bold text-black mb-2">
+                      <span>Catálogo Artesanal</span>
+                    </div>
+                    <h2 className="font-recoleta text-2xl sm:text-4xl font-bold text-black tracking-tight">
+                      Menú de Postres & Antojos
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[#222222] mt-0.5">
+                      {products.length} especialidades horneadas al día en Toluca
+                    </p>
                   </div>
-                  <span className="font-bold text-sm text-black">
-                    + Agregar Nuevo Postre
-                  </span>
-                  <span className="text-[11px] text-stone-500 mt-1 max-w-[180px]">
-                    Toca aquí para añadir un nuevo postre directamente al menú
-                  </span>
+
+                  {/* Clean Search Input */}
+                  <div className="relative w-full sm:w-64">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Buscar en el menú o sabor..."
+                      className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-black text-base sm:text-xs focus:outline-none bg-white placeholder:text-black/50"
+                    />
+                    <Search className="w-4 h-4 text-black absolute left-3 top-3.5" />
+                  </div>
                 </div>
-              )}
-            </div>
-          )}
 
-        </section>
+                {/* Sticky Categories Bar */}
+                <div className="sticky top-16 sm:top-20 z-30 bg-[#f5f4f0]/95 backdrop-blur-xs py-2 mb-6 border-b border-black/10">
+                  <CategoryFilter
+                    activeCategory={activeCategory}
+                    onSelectCategory={setActiveCategory}
+                    counts={categoryCounts}
+                  />
+                </div>
 
-        {/* Hatch Editorial Cake Customizer */}
-        <CakeCustomizer
-          config={config}
-          onAddToCartWithOptions={handleAddToCartWithOptions}
-          onOpenCart={() => setIsCartOpen(true)}
-        />
+                {/* Product Grid - 2 columns on mobile */}
+                {filteredProducts.length === 0 && !isEditMode ? (
+                  <div className="text-center py-16 bg-white rounded-card border border-black p-8 space-y-3">
+                    <p className="font-bold text-sm text-black">
+                      No encontramos postres con "{searchQuery}"
+                    </p>
+                    <button
+                      onClick={() => { setSearchQuery(''); setActiveCategory('todos'); }}
+                      className="px-4 py-2 rounded-btn bg-[#99ffcc] text-black font-bold text-xs border border-black"
+                    >
+                      Ver todo el menú
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+                    {filteredProducts.map((product) => {
+                      const cartQty = cart
+                        .filter((item) => item.product.id === product.id)
+                        .reduce((sum, item) => sum + item.quantity, 0);
 
-        {/* About Section */}
-        <AboutBecca
-          config={config}
-          isEditMode={isEditMode}
-          onUpdateField={handleUpdateConfigField}
-        />
+                      return (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          quantityInCart={cartQty}
+                          onAddToCart={handleAddToCart}
+                          onUpdateQuantity={handleUpdateProductQuantity}
+                          onOpenDetails={(p) => setSelectedProductForModal(p)}
+                          isEditMode={isEditMode}
+                          onUpdateProduct={handleUpdateProductInLiveEdit}
+                          onDeleteProduct={handleDeleteProductInLiveEdit}
+                          onToggleAvailability={handleToggleAvailabilityInLiveEdit}
+                          onTriggerChangeImage={handleTriggerChangeImageInLiveEdit}
+                        />
+                      );
+                    })}
 
-        {/* Galería de Referencias / Rollo de Cámara de Pasteles Reales */}
-        <PortfolioRoll config={config} />
+                    {/* Add New Product Card in Live Edit Mode */}
+                    {isEditMode && (
+                      <div
+                        onClick={() => setIsAddProductOpen(true)}
+                        className="border-2 border-dashed border-black/40 hover:border-black rounded-card rounded-2xl p-6 flex flex-col items-center justify-center min-h-[260px] cursor-pointer bg-white/60 hover:bg-[#99ffcc]/20 transition-all text-center group active:scale-98"
+                      >
+                        <div className="w-12 h-12 rounded-full bg-white border border-black flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-xs">
+                          <Plus className="w-6 h-6 text-black" />
+                        </div>
+                        <span className="font-bold text-sm text-black">
+                          + Agregar Nuevo Postre
+                        </span>
+                        <span className="text-[11px] text-stone-500 mt-1 max-w-[180px]">
+                          Toca aquí para añadir un nuevo postre directamente al menú
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </section>
+            );
+          } else if (blockId === 'customizer') {
+            blockContent = (
+              <CakeCustomizer
+                config={config}
+                onAddToCartWithOptions={handleAddToCartWithOptions}
+                onOpenCart={() => setIsCartOpen(true)}
+                isEditMode={isEditMode}
+                onTriggerChangeTierImage={handleTriggerChangeTierImage}
+              />
+            );
+          } else if (blockId === 'portfolio') {
+            blockContent = (
+              <PortfolioRoll
+                config={config}
+                isEditMode={isEditMode}
+                onUpdatePortfolioItem={handleUpdatePortfolioItem}
+                onDeletePortfolioItem={handleDeletePortfolioItem}
+                onAddPortfolioItem={handleAddPortfolioItem}
+                onTriggerChangeImage={handleTriggerChangePortfolioImage}
+              />
+            );
+          } else if (blockId === 'about') {
+            blockContent = (
+              <AboutBecca
+                config={config}
+                isEditMode={isEditMode}
+                onUpdateField={handleUpdateConfigField}
+              />
+            );
+          } else if (blockId === 'faq') {
+            blockContent = <FAQSection config={config} />;
+          }
 
-        {/* FAQs */}
-        <FAQSection config={config} />
+          if (!blockContent) return null;
 
+          return (
+            <CanvasBlockWrapper
+              key={blockId}
+              blockId={blockId}
+              blockName={blockDef.name}
+              icon={<span>{blockDef.icon}</span>}
+              isEditMode={isEditMode}
+              isHidden={isHidden}
+              isFirst={isFirst}
+              isLast={isLast}
+              onMoveUp={() => handleMoveBlock(index, 'up')}
+              onMoveDown={() => handleMoveBlock(index, 'down')}
+              onToggleHide={() => handleToggleHideBlock(blockId)}
+            >
+              {blockContent}
+            </CanvasBlockWrapper>
+          );
+        })}
       </main>
 
       {/* Footer */}
@@ -615,6 +817,17 @@ export function App() {
         isOpen={isAddProductOpen}
         onClose={() => setIsAddProductOpen(false)}
         onAddProduct={handleAddProductInLiveEdit}
+      />
+
+      {/* Blocks Organizer Modal in Live Edit */}
+      <BlocksOrganizerModal
+        isOpen={isBlocksOrganizerOpen}
+        blockOrder={currentBlockOrder}
+        hiddenBlocks={currentHiddenBlocks}
+        blockDefinitions={BLOCK_DEFINITIONS}
+        onMoveBlock={handleMoveBlock}
+        onToggleHideBlock={handleToggleHideBlock}
+        onClose={() => setIsBlocksOrganizerOpen(false)}
       />
 
       {/* Image Crop Modal in Live Edit */}

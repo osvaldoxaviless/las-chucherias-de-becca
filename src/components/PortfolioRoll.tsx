@@ -1,98 +1,35 @@
-import React, { useRef } from 'react';
-import { Instagram, ArrowLeft, ArrowRight, Sparkles, MessageCircle, Heart } from 'lucide-react';
-import { StoreConfig } from '../types';
+import React, { useRef, useState } from 'react';
+import { 
+  Instagram, ArrowLeft, ArrowRight, Sparkles, MessageCircle, Heart, 
+  Camera, Plus, Trash2, Edit3, Check, X 
+} from 'lucide-react';
+import { StoreConfig, PortfolioItem } from '../types';
+import { DEFAULT_PORTFOLIO_ITEMS } from '../data/portfolio';
 
 interface Props {
   config: StoreConfig;
+  isEditMode?: boolean;
+  onUpdatePortfolioItem?: (updatedItem: PortfolioItem) => void;
+  onDeletePortfolioItem?: (id: string) => void;
+  onAddPortfolioItem?: (newItem: PortfolioItem) => void;
+  onTriggerChangeImage?: (item: PortfolioItem) => void;
 }
 
-interface PortfolioItem {
-  id: string;
-  frameNum: string;
-  title: string;
-  category: string;
-  servings: string;
-  image: string;
-  description: string;
-}
-
-const PORTFOLIO_ITEMS: PortfolioItem[] = [
-  {
-    id: 'cake-malefica',
-    frameNum: '01A',
-    title: 'Pastel Fantasía Maléfica & Drip Rosa',
-    category: 'Temático / Drip Cake',
-    servings: '8 a 12 personas',
-    image: '/images/cake-mom.jpg',
-    description: 'Drip cake con cuernos esculpidos en fondant, perlas comestibles y velita de cumpleaños.',
-  },
-  {
-    id: 'cake-boda',
-    frameNum: '02A',
-    title: 'Pastel de Bodas 2 Pisos Elegance',
-    category: 'Bodas & XV Años',
-    servings: '25 a 35 personas',
-    image: '/images/cake-wedding.jpg',
-    description: 'Estructura en dos pisos con flores botánicas naturales y textura artesanal en crema.',
-  },
-  {
-    id: 'cake-bento',
-    frameNum: '03A',
-    title: 'Bento Cake Coreano Baby Blue',
-    category: 'Bento Cake Mini',
-    servings: '2 a 4 personas',
-    image: '/images/cake-blue.jpg',
-    description: 'Pastelito individual estilo coreano en cajita con dedicatoria corta y velita.',
-  },
-  {
-    id: 'cake-alto',
-    frameNum: '04A',
-    title: 'Pastel 1 Piso Alto Gourmet Macarons',
-    category: 'Celebración Gourmet',
-    servings: '16 a 20 personas',
-    image: '/images/cake-corporate.jpg',
-    description: 'Doble altura estilizada con macarons franceses, texturas de betún y detalles florales.',
-  },
-  {
-    id: 'cake-changuito',
-    frameNum: '05A',
-    title: 'Pastel Modelado Infantil Changuito 3D',
-    category: 'Infantil Temático',
-    servings: '12 a 15 personas',
-    image: '/images/cake-monkey.jpg',
-    description: 'Modelado artístico hecho a mano en fondant para cumpleaños y baby showers.',
-  },
-  {
-    id: 'cake-cumple-flores',
-    frameNum: '06A',
-    title: 'Pastel Celebración & Espirales de Betún',
-    category: 'Cumpleaños',
-    servings: '10 a 14 personas',
-    image: '/images/becca-birthday.jpg',
-    description: 'Cobertura suave con detalles Vintage Lambeth y tonos pastel.',
-  },
-  {
-    id: 'cake-navideno-carrusel',
-    frameNum: '07A',
-    title: 'Pastel Navideño Carrusel de Dulces',
-    category: 'Edición Navideña 🎄',
-    servings: '12 a 16 personas',
-    image: '/images/navidad/navidad-1.jpg',
-    description: 'Pastel navideño con bastones de caramelo, cerezas y arbolito de navidad.',
-  },
-  {
-    id: 'cake-navideno-santa',
-    frameNum: '08A',
-    title: 'Pastel Navideño Santa & Nieve',
-    category: 'Edición Navideña 🎄',
-    servings: '10 a 14 personas',
-    image: '/images/navidad/navidad-4.jpg',
-    description: 'Diseño navideño festivo con Santa Claus modelado en betún y copos de nieve.',
-  },
-];
-
-export const PortfolioRoll: React.FC<Props> = ({ config }) => {
+export const PortfolioRoll: React.FC<Props> = ({
+  config,
+  isEditMode = false,
+  onUpdatePortfolioItem,
+  onDeletePortfolioItem,
+  onAddPortfolioItem,
+  onTriggerChangeImage,
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const items = (config.portfolioItems && config.portfolioItems.length > 0)
+    ? config.portfolioItems
+    : DEFAULT_PORTFOLIO_ITEMS;
+
+  const [activeUrlPromptId, setActiveUrlPromptId] = useState<string | null>(null);
+  const [tempUrlInput, setTempUrlInput] = useState('');
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -108,6 +45,20 @@ export const PortfolioRoll: React.FC<Props> = ({ config }) => {
       `¡Hola Rebeca! Vi en tu galería de referencias el diseño "${item.title}" (${item.servings}). Me gustaría cotizar uno similar para mi evento.`
     );
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+  };
+
+  const handleCreateNewReference = () => {
+    const nextNum = (items.length + 1).toString().padStart(2, '0') + 'A';
+    const newItem: PortfolioItem = {
+      id: `ref-${Date.now()}`,
+      frameNum: nextNum,
+      title: 'Nuevo Diseño de Referencia',
+      category: 'Temático / Celebración',
+      servings: '12 a 15 personas',
+      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80',
+      description: 'Pastel personalizado con temática especial elaborado en nuestro taller en Toluca.',
+    };
+    onAddPortfolioItem?.(newItem);
   };
 
   return (
@@ -131,8 +82,19 @@ export const PortfolioRoll: React.FC<Props> = ({ config }) => {
             </p>
           </div>
 
-          {/* Controles de deslizamiento */}
-          <div className="flex items-center gap-3 self-start md:self-end">
+          {/* Controles de deslizamiento y botón de agregar en modo edición */}
+          <div className="flex items-center gap-3 self-start md:self-end flex-wrap">
+            {isEditMode && (
+              <button
+                type="button"
+                onClick={handleCreateNewReference}
+                className="px-3.5 py-2 rounded-full bg-[#99ffcc] hover:bg-[#80ffbf] text-black font-extrabold text-xs flex items-center gap-1.5 border border-black shadow-md active:scale-95 transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                <span>+ Agregar Referencia</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => scroll('left')}
@@ -157,7 +119,6 @@ export const PortfolioRoll: React.FC<Props> = ({ config }) => {
       {/* TIRA DE PELÍCULA / ROLLO DE CÁMARA (FILM STRIP TRACK)          */}
       {/* ============================================================== */}
       <div className="relative w-full">
-        
         {/* Perforaciones superiores de película (Sprockets) */}
         <div className="w-full h-6 bg-[#0a0a0a] border-y border-white/15 flex items-center justify-between px-2 overflow-hidden select-none">
           <div className="flex items-center gap-3 text-[10px] tracking-[6px] font-mono text-white/30 whitespace-nowrap">
@@ -173,10 +134,12 @@ export const PortfolioRoll: React.FC<Props> = ({ config }) => {
           className="flex items-stretch gap-6 overflow-x-auto py-6 px-4 sm:px-8 scrollbar-none scroll-smooth bg-[#111111]"
           style={{ scrollSnapType: 'x mandatory' }}
         >
-          {PORTFOLIO_ITEMS.map((item) => (
+          {items.map((item) => (
             <div
               key={item.id}
-              className="flex-shrink-0 w-[290px] sm:w-[330px] bg-[#1a1a1a] rounded-2xl border border-white/20 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:border-[#99ffcc] hover:scale-[1.01]"
+              className={`flex-shrink-0 w-[290px] sm:w-[330px] bg-[#1a1a1a] rounded-2xl border overflow-hidden flex flex-col justify-between group transition-all duration-300 ${
+                isEditMode ? 'border-dashed border-[#99ffcc]/70 shadow-lg' : 'border-white/20 hover:border-[#99ffcc] hover:scale-[1.01]'
+              }`}
               style={{ scrollSnapAlign: 'start' }}
             >
               {/* Barra superior de cuadro de película */}
@@ -184,33 +147,159 @@ export const PortfolioRoll: React.FC<Props> = ({ config }) => {
                 <span className="flex items-center gap-1">
                   🎞️ KODAK CHUCHES • <span className="text-[#99ffcc] font-bold">{item.frameNum}</span>
                 </span>
-                <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-white/80 font-sans">
-                  {item.category}
-                </span>
+                
+                {isEditMode ? (
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={item.category}
+                      onChange={(e) => onUpdatePortfolioItem?.({ ...item, category: e.target.value })}
+                      className="bg-white/10 text-white text-[10px] px-2 py-0.5 rounded border border-white/20 focus:outline-none focus:border-[#99ffcc] max-w-[120px]"
+                      placeholder="Categoría..."
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm(`¿Eliminar la referencia "${item.title}"?`)) {
+                          onDeletePortfolioItem?.(item.id);
+                        }
+                      }}
+                      className="p-1 rounded text-stone-400 hover:text-rose-400 transition-colors"
+                      title="Eliminar esta foto de la galería"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded text-white/80 font-sans">
+                    {item.category}
+                  </span>
+                )}
               </div>
 
               {/* Fotografía del pastel */}
-              <div className="relative aspect-[4/3] bg-black overflow-hidden">
+              <div className="relative aspect-[4/3] bg-black overflow-hidden group/img">
                 <img
                   src={item.image}
                   alt={item.title}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
                 />
-                <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-white/20">
-                  {item.servings}
-                </div>
+
+                {/* Porciones tag */}
+                {isEditMode ? (
+                  <div className="absolute bottom-2 left-2 z-10">
+                    <input
+                      type="text"
+                      value={item.servings}
+                      onChange={(e) => onUpdatePortfolioItem?.({ ...item, servings: e.target.value })}
+                      placeholder="8 a 12 personas"
+                      className="bg-black/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/30 focus:outline-none max-w-[120px]"
+                    />
+                  </div>
+                ) : (
+                  <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-white/20">
+                    {item.servings}
+                  </div>
+                )}
+
+                {/* Botón Cambiar Foto en modo edición */}
+                {isEditMode && (
+                  <div className="absolute inset-0 bg-black/50 opacity-90 sm:opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-opacity z-20">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onTriggerChangeImage) {
+                          onTriggerChangeImage(item);
+                        } else {
+                          setActiveUrlPromptId(item.id);
+                          setTempUrlInput(item.image);
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-white text-black font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95"
+                    >
+                      <Camera className="w-3.5 h-3.5 text-stone-800" />
+                      <span>Cambiar Foto</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* URL Prompt en caso de edición manual */}
+                {activeUrlPromptId === item.id && (
+                  <div className="absolute inset-0 bg-stone-900/95 p-3 flex flex-col justify-center gap-2 z-30">
+                    <span className="text-[11px] font-bold text-white">URL de la nueva foto:</span>
+                    <input
+                      type="url"
+                      value={tempUrlInput}
+                      onChange={(e) => setTempUrlInput(e.target.value)}
+                      placeholder="https://..."
+                      className="w-full text-xs p-1.5 bg-black text-white border border-stone-700 rounded-lg"
+                    />
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setActiveUrlPromptId(null)}
+                        className="px-2 py-1 text-[11px] text-stone-400 hover:text-white"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (tempUrlInput.trim()) {
+                            onUpdatePortfolioItem?.({ ...item, image: tempUrlInput.trim() });
+                          }
+                          setActiveUrlPromptId(null);
+                        }}
+                        className="px-2.5 py-1 text-[11px] bg-[#99ffcc] text-black font-bold rounded"
+                      >
+                        Guardar
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Ficha descriptiva y acción */}
               <div className="p-4 flex-1 flex flex-col justify-between space-y-3 bg-[#1e1e1e]">
-                <div className="space-y-1">
-                  <h4 className="font-recoleta font-bold text-base text-white group-hover:text-[#99ffcc] transition-colors leading-snug">
-                    {item.title}
-                  </h4>
-                  <p className="text-white/65 text-xs line-clamp-2 leading-relaxed">
-                    {item.description}
-                  </p>
+                <div className="space-y-1.5">
+                  {isEditMode ? (
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-0.5">
+                        Título de Referencia
+                      </label>
+                      <input
+                        type="text"
+                        value={item.title}
+                        onChange={(e) => onUpdatePortfolioItem?.({ ...item, title: e.target.value })}
+                        className="w-full font-recoleta font-bold text-sm sm:text-base text-white border-b border-dashed border-[#99ffcc]/60 focus:border-[#99ffcc] bg-transparent py-0.5 focus:outline-none"
+                        placeholder="Título del pastel..."
+                      />
+                    </div>
+                  ) : (
+                    <h4 className="font-recoleta font-bold text-base text-white group-hover:text-[#99ffcc] transition-colors leading-snug">
+                      {item.title}
+                    </h4>
+                  )}
+
+                  {isEditMode ? (
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-0.5">
+                        Descripción
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={item.description}
+                        onChange={(e) => onUpdatePortfolioItem?.({ ...item, description: e.target.value })}
+                        className="w-full text-white/80 text-xs border-b border-dashed border-stone-600 focus:border-[#99ffcc] bg-transparent py-0.5 focus:outline-none resize-none leading-relaxed"
+                        placeholder="Descripción del diseño..."
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-white/65 text-xs line-clamp-2 leading-relaxed">
+                      {item.description}
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
@@ -236,6 +325,24 @@ export const PortfolioRoll: React.FC<Props> = ({ config }) => {
               </div>
             </div>
           ))}
+
+          {/* Tarjeta de Agregar Nueva Referencia al final del carrusel en Modo Edición */}
+          {isEditMode && (
+            <div
+              onClick={handleCreateNewReference}
+              className="flex-shrink-0 w-[240px] sm:w-[280px] bg-white/5 hover:bg-white/10 rounded-2xl border-2 border-dashed border-[#99ffcc]/60 hover:border-[#99ffcc] cursor-pointer flex flex-col items-center justify-center p-6 text-center transition-all group active:scale-98"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#99ffcc] text-black flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-md">
+                <Plus className="w-6 h-6" />
+              </div>
+              <span className="font-bold text-sm text-white group-hover:text-[#99ffcc] transition-colors">
+                + Agregar Referencia
+              </span>
+              <span className="text-xs text-white/60 mt-1 max-w-[180px]">
+                Sube una nueva foto de tus pasteles temáticos o Pinterest
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Perforaciones inferiores de película (Sprockets) */}

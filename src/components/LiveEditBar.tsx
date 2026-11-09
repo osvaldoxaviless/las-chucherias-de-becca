@@ -1,5 +1,5 @@
 import React from 'react';
-import { Save, Plus, Settings, X, Sparkles, LayoutList } from 'lucide-react';
+import { Save, Plus, Settings, X, Sparkles, LayoutList, LayoutGrid } from 'lucide-react';
 
 interface Props {
   onSaveAndExit: () => void;
@@ -7,6 +7,7 @@ interface Props {
   onAddNewProduct: () => void;
   onOpenQuickSettings: () => void;
   onOpenClassicPanel: () => void;
+  onOpenBlocksOrganizer?: () => void;
   hasUnsavedChanges?: boolean;
 }
 
@@ -16,6 +17,7 @@ export const LiveEditBar: React.FC<Props> = ({
   onAddNewProduct,
   onOpenQuickSettings,
   onOpenClassicPanel,
+  onOpenBlocksOrganizer,
   hasUnsavedChanges = false,
 }) => {
   return (
@@ -51,6 +53,19 @@ export const LiveEditBar: React.FC<Props> = ({
             <Plus className="w-3.5 h-3.5 text-[#99ffcc]" />
             <span>+ Postre</span>
           </button>
+
+          {/* Blocks Organizer */}
+          {onOpenBlocksOrganizer && (
+            <button
+              type="button"
+              onClick={onOpenBlocksOrganizer}
+              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-colors border border-white/20 active:scale-95"
+              title="Organizar y reordenar bloques del canvas"
+            >
+              <LayoutGrid className="w-3.5 h-3.5 text-[#99ffcc]" />
+              <span className="hidden sm:inline">Bloques</span>
+            </button>
+          )}
 
           {/* Quick Settings (PIN, WhatsApp, Location) */}
           <button

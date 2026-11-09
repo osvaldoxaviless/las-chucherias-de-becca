@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Sparkles, ShoppingBag, MessageCircle, Check, 
-  ArrowLeft, ArrowRight, ChevronRight, Layers, Eye, RefreshCw, AlertCircle 
+  ArrowLeft, ArrowRight, ChevronRight, Layers, Eye, RefreshCw, AlertCircle, Camera 
 } from 'lucide-react';
 import { Product, StoreConfig, CustomCakeQuote } from '../types';
 import { createWhatsAppCakeQuoteUrl } from '../utils/whatsapp';
@@ -10,6 +10,8 @@ interface Props {
   config: StoreConfig;
   onAddToCartWithOptions: (product: Product, options: Record<string, string>, note?: string) => void;
   onOpenCart: () => void;
+  isEditMode?: boolean;
+  onTriggerChangeTierImage?: (tierId: string) => void;
 }
 
 export interface TierOption {
@@ -138,6 +140,8 @@ export const CakeCustomizer: React.FC<Props> = ({
   config,
   onAddToCartWithOptions,
   onOpenCart,
+  isEditMode = false,
+  onTriggerChangeTierImage,
 }) => {
   const flavors = (config.customFlavors && config.customFlavors.length > 0)
     ? config.customFlavors
@@ -380,12 +384,23 @@ export const CakeCustomizer: React.FC<Props> = ({
               {/* Escenario con Fotografía Real o Capas de Pastel */}
               <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-[#eae8e1] border border-black/20">
                 {viewMode === 'exterior' ? (
-                  <div id={selectedTier.id === 'double' ? 'exterior-tier-2' : 'exterior-tier-1'} className="w-full h-full">
+                  <div id={selectedTier.id === 'double' ? 'exterior-tier-2' : 'exterior-tier-1'} className="w-full h-full relative group">
                     <img
-                      src={selectedTier.image}
+                      src={config.customTierImages?.[selectedTier.id] || selectedTier.image}
                       alt={selectedTier.name}
                       className="w-full h-full object-cover transition-all duration-300"
                     />
+                    {isEditMode && (
+                      <button
+                        type="button"
+                        onClick={() => onTriggerChangeTierImage?.(selectedTier.id)}
+                        className="absolute bottom-2.5 right-2.5 px-3 py-1.5 rounded-xl bg-white text-black font-bold text-xs flex items-center gap-1.5 shadow-md border border-black active:scale-95 z-20 hover:bg-[#99ffcc] transition-colors"
+                        title="Cambiar la foto real de este tamaño de pastel"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>Cambiar Foto ({selectedTier.name})</span>
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <div className="w-full h-full bg-[#fdfbf7] p-3 sm:p-4 flex flex-col justify-between items-center text-center">
@@ -535,6 +550,20 @@ export const CakeCustomizer: React.FC<Props> = ({
                           <span className="text-[10px] text-black/60 block mt-1 leading-snug">
                             {tier.desc}
                           </span>
+                          {isEditMode && (
+                            <div className="mt-2 pt-1 border-t border-black/10 flex items-center justify-end">
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onTriggerChangeTierImage?.(tier.id);
+                                }}
+                                className="text-[10px] font-bold text-black hover:underline flex items-center gap-1 cursor-pointer bg-white/70 px-2 py-0.5 rounded-md border border-black/30"
+                              >
+                                <Camera className="w-3 h-3 text-stone-700" />
+                                <span>Cambiar foto real</span>
+                              </span>
+                            </div>
+                          )}
                         </button>
                       );
                     })}

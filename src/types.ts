@@ -101,6 +101,16 @@ export interface CustomizerTopping {
   price: number;
 }
 
+export interface PortfolioItem {
+  id: string;
+  frameNum: string;
+  title: string;
+  category: string;
+  servings: string;
+  image: string;
+  description: string;
+}
+
 export interface StoreConfig {
   storeName: string;
   instagramHandle: string;
@@ -126,4 +136,9 @@ export interface StoreConfig {
   customFillings?: CustomizerFilling[];
   customFrostings?: CustomizerFrosting[];
   customToppings?: CustomizerTopping[];
+  // Canvas por Bloques & Personalización Visual
+  blockOrder?: string[];
+  hiddenBlocks?: string[];
+  customTierImages?: Record<string, string>;
+  portfolioItems?: PortfolioItem[];
 }
