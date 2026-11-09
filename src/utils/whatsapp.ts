@@ -48,7 +48,7 @@ export function createWhatsAppOrderUrl(
   message += `📞 *Teléfono:* ${delivery.phone || 'No indicado'}\n`;
   message += `📅 *Fecha requerida:* ${delivery.deliveryDate || 'A coordinar'}\n`;
   message += `⏰ *Hora aproximada:* ${delivery.deliveryTime || 'A coordinar'}\n`;
-  message += `📍 *Método:* ${delivery.type === 'delivery' ? `🚗 Envío (${delivery.zoneName || 'Local'})` : '🏪 Retiro en Taller (El Oro 112, Toluca)'}\n`;
+  message += `📍 *Método:* ${delivery.type === 'delivery' ? `🚗 Envío (${delivery.zoneName || 'Local'})` : '🏪 Retiro en Taller (Toluca • Ubicación enviada al confirmar)'}\n`;
   
   if (delivery.type === 'delivery' && delivery.address) {
     message += `🏡 *Dirección de Entrega:* ${delivery.address}`;

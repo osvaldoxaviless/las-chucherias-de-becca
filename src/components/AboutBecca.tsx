@@ -93,7 +93,7 @@ export const AboutBecca: React.FC<Props> = ({
 
               <div className="pt-2 flex flex-wrap gap-2 text-xs font-bold">
                 <span className="px-3 py-1 rounded-full bg-[#ffcc99] border border-black text-black">
-                  📍 {config.address || 'El Oro 112, Toluca'}
+                  📍 {(config.address && !config.address.includes('El Oro 112')) ? config.address : 'Toluca, Estado de México'}
                 </span>
                 <span className="px-3 py-1 rounded-full bg-[#7bbbff] border border-black text-black">
                   🧁 +1,500 seguidores

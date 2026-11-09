@@ -6,7 +6,6 @@ interface Props {
   onCancelAndExit: () => void;
   onAddNewProduct: () => void;
   onOpenQuickSettings: () => void;
-  onOpenClassicPanel: () => void;
   onOpenBlocksOrganizer?: () => void;
   hasUnsavedChanges?: boolean;
 }
@@ -16,7 +15,6 @@ export const LiveEditBar: React.FC<Props> = ({
   onCancelAndExit,
   onAddNewProduct,
   onOpenQuickSettings,
-  onOpenClassicPanel,
   onOpenBlocksOrganizer,
   hasUnsavedChanges = false,
 }) => {
@@ -77,17 +75,6 @@ export const LiveEditBar: React.FC<Props> = ({
             <Settings className="w-3.5 h-3.5 text-amber-300" />
             <span className="hidden sm:inline">Ajustes & PIN</span>
             <span className="sm:hidden">Ajustes</span>
-          </button>
-
-          {/* Classic Admin Panel toggle */}
-          <button
-            type="button"
-            onClick={onOpenClassicPanel}
-            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-colors border border-white/20 active:scale-95"
-            title="Abrir panel administrativo tradicional (tablas y métricas)"
-          >
-            <LayoutList className="w-3.5 h-3.5 text-sky-300" />
-            <span className="hidden md:inline">Panel Clásico</span>
           </button>
 
           {/* Save & Exit Button (Primary) */}

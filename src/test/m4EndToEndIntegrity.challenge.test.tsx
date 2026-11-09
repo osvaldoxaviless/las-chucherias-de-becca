@@ -234,7 +234,7 @@ describe('Milestone 4: End-to-End Integrity & Adversarial Coverage Hardening', (
       const whatsappInput = screen.getByDisplayValue(DEFAULT_STORE_CONFIG.whatsappNumber);
       fireEvent.change(whatsappInput, { target: { value: '527229998888' } });
 
-      const addressInput = screen.getByDisplayValue('El Oro 112, Toluca, Estado de México');
+      const addressInput = screen.getByDisplayValue(DEFAULT_STORE_CONFIG.address);
       fireEvent.change(addressInput, { target: { value: 'Av. Colón 450, Toluca' } });
 
       // Save settings

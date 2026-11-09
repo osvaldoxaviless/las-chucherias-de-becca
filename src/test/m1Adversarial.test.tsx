@@ -328,7 +328,7 @@ describe('Milestone 1 Adversarial Challenge & Stress Suite', () => {
       });
 
       // Edit address
-      fireEvent.change(screen.getByPlaceholderText('El Oro 112, Toluca, Estado de México'), {
+      fireEvent.change(screen.getByPlaceholderText('Toluca, Estado de México'), {
         target: { value: 'Calle Real 450, Centro' },
       });
 

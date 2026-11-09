@@ -470,59 +470,31 @@ export const AdminPanel: React.FC<Props> = ({
         {tab === 'products' && (
           <div className="space-y-6">
             
-            {/* Banner de Bienvenida a la Página Espejo */}
+            {/* Banner de acceso directo a Edición en Tienda Real */}
             <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-50 via-rose-50 to-[#99ffcc]/30 border border-black/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black text-white text-[11px] font-bold">
                   <Sparkles className="w-3 h-3 text-[#99ffcc]" />
-                  <span>Página Espejo de Rebeca</span>
+                  <span>Modo Edición en Tienda (Recomendado)</span>
                 </div>
                 <h3 className="font-recoleta text-lg font-bold text-black">
-                  Edición Visual Directa de tu Menú
+                  Edita tu tienda visualmente tal como la ven tus clientes
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed max-w-xl">
-                  Así es exactamente como tus clientes ven tus postres. Puedes tocar la foto para cambiarla, escribir un nuevo nombre o cambiar el precio directamente aquí.
+                  Reordena bloques del canvas, oculta secciones, agrega nuevos postres y cambia fotos reales o precios directamente en la pantalla.
                 </p>
-                {onEnterLiveEdit && (
-                  <button
-                    type="button"
-                    onClick={onEnterLiveEdit}
-                    className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-black hover:bg-stone-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95"
-                  >
-                    <Sparkles className="w-3.5 h-3.5 text-[#99ffcc]" />
-                    <span>Ver y editar en la tienda real (vista cliente)</span>
-                  </button>
-                )}
               </div>
 
-              {/* Selector de modo: Espejo Visual vs Tabla Compacta */}
-              <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-stone-200 self-stretch sm:self-auto justify-center">
+              {onEnterLiveEdit && (
                 <button
                   type="button"
-                  onClick={() => {
-                    setViewStyle('mirror');
-                    if (onEnterLiveEdit) onEnterLiveEdit();
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    viewStyle === 'mirror'
-                      ? 'bg-stone-900 text-white shadow-xs'
-                      : 'text-stone-600 hover:text-stone-900'
-                  }`}
+                  onClick={onEnterLiveEdit}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#99ffcc] text-black font-extrabold text-xs hover:bg-[#80ffbf] transition-all active:scale-95 shadow-xs border border-black flex-shrink-0"
                 >
-                  <span>🖼️ Modo Espejo (Tienda)</span>
+                  <Sparkles className="w-4 h-4 text-black" />
+                  <span>Abrir Canvas de Edición en Tienda</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setViewStyle('table')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    viewStyle === 'table'
-                      ? 'bg-stone-900 text-white shadow-xs'
-                      : 'text-stone-600 hover:text-stone-900'
-                  }`}
-                >
-                  <span>📋 Modo Lista</span>
-                </button>
-              </div>
+              )}
             </div>
 
             {/* Quick Metrics Bar */}
@@ -1205,7 +1177,7 @@ export const AdminPanel: React.FC<Props> = ({
                   type="text"
                   value={config.address ?? ''}
                   onChange={(e) => handleUpdateConfigField('address', e.target.value)}
-                  placeholder="El Oro 112, Toluca, Estado de México"
+                  placeholder="Toluca, Estado de México"
                   className="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-900"
                 />
               </div>

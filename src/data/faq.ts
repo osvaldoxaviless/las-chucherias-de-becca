@@ -10,7 +10,7 @@ export const FAQS: FAQItem[] = [
   },
   {
     question: '¿Cómo funciona la entrega a domicilio (Delivery)?',
-    answer: 'Contamos con envíos locales seguros en Toluca, Metepec, San Mateo Atenco y Zinacantepec a través de servicio de chofer privado/mensajería con costo adicional según tu ubicación exacta. También puedes retirar sin costo en nuestro taller ubicado en El Oro 112, Toluca.'
+    answer: 'Contamos con envíos locales seguros en Toluca, Metepec, San Mateo Atenco y Zinacantepec a través de servicio de chofer privado/mensajería con costo adicional según tu ubicación exacta. También puedes retirar sin costo en nuestro taller en Toluca (por tu seguridad y la nuestra, la ubicación exacta para recoger se te comparte al confirmar tu pedido).'
   },
   {
     question: '¿Cómo se realiza el pago del pedido?',

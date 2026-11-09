@@ -5,7 +5,7 @@ export const DEFAULT_STORE_CONFIG: StoreConfig = {
   storeName: 'Las chucherías de Becca',
   instagramHandle: 'laschucheriasdebecca',
   whatsappNumber: '527225628061',
-  address: 'El Oro 112, Toluca, Estado de México',
+  address: 'Toluca, Estado de México',
   city: 'Toluca y alrededores',
   announcementText: 'Toluca y alrededores • Pedidos con anticipación',
   bannerVisible: true,

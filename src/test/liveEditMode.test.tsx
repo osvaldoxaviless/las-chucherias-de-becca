@@ -206,7 +206,7 @@ describe('Live In-Place Edit Mode ("Modo Edición en Tienda Real")', () => {
     fireEvent.change(screen.getByPlaceholderText('527225628061'), {
       target: { value: '527229998877' },
     });
-    fireEvent.change(screen.getByPlaceholderText('El Oro 112, Toluca'), {
+    fireEvent.change(screen.getByPlaceholderText('Toluca, Estado de México'), {
       target: { value: 'Metepec Centro 45' },
     });
 

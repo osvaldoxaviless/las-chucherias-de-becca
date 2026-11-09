@@ -59,9 +59,13 @@ export function App() {
       if (parsed.heroTitle === 'Repostería artesanal y pasteles únicos para celebrar.') {
         parsed.heroTitle = DEFAULT_STORE_CONFIG.heroTitle;
       }
+      if (parsed.address && parsed.address.includes('El Oro 112')) {
+        parsed.address = 'Toluca, Estado de México';
+      }
       return {
         ...DEFAULT_STORE_CONFIG,
         ...parsed,
+        address: (parsed.address && !parsed.address.includes('El Oro 112')) ? parsed.address : 'Toluca, Estado de México',
         adminPin: (parsed.adminPin && String(parsed.adminPin).trim()) || DEFAULT_STORE_CONFIG.adminPin || '2026',
       };
     } catch {
@@ -128,11 +132,18 @@ export function App() {
     });
 
     const unsubConfig = subscribeToConfigCloud((cloudConfig) => {
-      setConfig((prev) => ({
-        ...prev,
-        ...cloudConfig,
-        adminPin: (cloudConfig.adminPin && String(cloudConfig.adminPin).trim()) || prev.adminPin || '2026',
-      }));
+      setConfig((prev) => {
+        let safeAddress = cloudConfig.address || prev.address;
+        if (safeAddress && safeAddress.includes('El Oro 112')) {
+          safeAddress = 'Toluca, Estado de México';
+        }
+        return {
+          ...prev,
+          ...cloudConfig,
+          address: safeAddress,
+          adminPin: (cloudConfig.adminPin && String(cloudConfig.adminPin).trim()) || prev.adminPin || '2026',
+        };
+      });
     });
 
     return () => {
@@ -563,7 +574,6 @@ export function App() {
           onCancelAndExit={handleCancelAndExitEditMode}
           onAddNewProduct={() => setIsAddProductOpen(true)}
           onOpenQuickSettings={() => setIsQuickSettingsOpen(true)}
-          onOpenClassicPanel={() => setIsAdminOpen(true)}
           onOpenBlocksOrganizer={() => setIsBlocksOrganizerOpen(true)}
           hasUnsavedChanges={hasUnsavedChanges}
         />

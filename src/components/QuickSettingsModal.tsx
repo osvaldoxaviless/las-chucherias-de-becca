@@ -143,15 +143,18 @@ export const QuickSettingsModal: React.FC<Props> = ({
             <div>
               <label className="font-bold text-stone-700 block mb-1 flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5 text-rose-500" />
-                <span>Dirección del Taller</span>
+                <span>Ubicación o Zona de Retiro</span>
               </label>
               <input
                 type="text"
                 value={formConfig.address || ''}
                 onChange={(e) => handleFieldChange('address', e.target.value)}
-                placeholder="El Oro 112, Toluca"
+                placeholder="Toluca, Estado de México"
                 className="w-full px-3 py-2 rounded-lg border border-stone-300 font-medium focus:outline-none focus:ring-2 focus:ring-black bg-white"
               />
+              <span className="text-[10px] text-stone-500 mt-1 block">
+                🔒 Por tu privacidad, te sugerimos indicar tu municipio o zona (sin tu calle o número privado).
+              </span>
             </div>
 
             <div>

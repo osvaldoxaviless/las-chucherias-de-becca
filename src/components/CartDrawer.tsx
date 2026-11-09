@@ -227,7 +227,7 @@ export const CartDrawer: React.FC<Props> = ({
                       }`}
                     >
                       <span className="block text-xs">Retiro en Taller</span>
-                      <span className="text-[10px] font-normal block opacity-80">El Oro 112, Toluca</span>
+                      <span className="text-[10px] font-normal block opacity-80">Toluca (Ubicación enviada al confirmar)</span>
                       <span className="text-[10px] font-bold block mt-1 text-black">GRATIS ($0)</span>
                     </button>
 
