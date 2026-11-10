@@ -32,7 +32,7 @@ export const Hero: React.FC<Props> = ({
   const confetti = seasonData.confettiColors || ['#ff99cc', '#7bbbff', '#ffcc99', '#99ffcc', '#d8b4fe'];
 
   return (
-    <section className="relative bg-[#f5f4f0] border-b border-black/10 pt-12 sm:pt-16 pb-20 sm:pb-28 overflow-x-clip">
+    <section className="relative bg-[#f5f4f0] border-b border-black/10 pt-12 sm:pt-16 pb-20 sm:pb-28 overflow-x-clip min-h-[580px] sm:min-h-[620px] flex flex-col justify-center">
       
       {/* Capa de Atmósfera de Temporada (Nieve, Corazones, Flores, Murciélagos, Destellos) */}
       <SeasonalAtmosphere

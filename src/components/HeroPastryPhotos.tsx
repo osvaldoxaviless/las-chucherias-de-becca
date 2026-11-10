@@ -27,10 +27,10 @@ export const HeroPastryPhotos: React.FC<Props> = ({
   return (
     <>
       {/* ==================================================================== */}
-      {/* FOTO 1 (IZQUIERDA): PASTEL REAL / DESTACADO TEMPORAL                  */}
+      {/* FOTO 1 (IZQUIERDA SUPERIOR): PASTEL REAL / DESTACADO TEMPORAL         */}
       {/* ==================================================================== */}
       <div 
-        className="hidden lg:flex absolute left-0 xl:left-2 2xl:left-4 top-1/2 -translate-y-1/2 z-10 flex-col items-center select-none pointer-events-auto animate-float-slow group"
+        className="hidden lg:flex absolute left-0 xl:left-2 2xl:left-4 top-8 xl:top-12 z-10 flex-col items-center select-none pointer-events-auto animate-float-slow group"
         title={leftCard.alt || leftCard.label}
       >
         <div className={`w-32 h-32 xl:w-40 xl:h-40 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 relative ${
@@ -132,7 +132,7 @@ export const HeroPastryPhotos: React.FC<Props> = ({
       {/* FOTO 3 (ACENTO INFERIOR): ANTOJITO O CUPCAKE HORNEADO AL DÍA         */}
       {/* ==================================================================== */}
       <div 
-        className="hidden xl:flex absolute left-2 2xl:left-6 -bottom-3 z-10 flex-col items-center select-none pointer-events-auto animate-float-gentle group"
+        className="hidden xl:flex absolute left-4 2xl:left-10 bottom-2 z-10 flex-col items-center select-none pointer-events-auto animate-float-gentle group"
         title={bottomCard.alt || bottomCard.label}
       >
         <div className={`w-28 h-28 xl:w-32 xl:h-32 rounded-2xl bg-white border-2 border-black p-2 shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 relative ${
