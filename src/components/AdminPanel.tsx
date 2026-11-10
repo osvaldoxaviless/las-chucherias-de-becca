@@ -1109,6 +1109,27 @@ export const AdminPanel: React.FC<Props> = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="sm:col-span-2 p-3.5 rounded-xl bg-purple-50/70 border border-purple-200">
+                <label className="font-bold text-stone-800 block mb-1">
+                  Capa de Temporada Activa
+                </label>
+                <select
+                  value={config.activeSeason || 'regular'}
+                  onChange={(e) => handleUpdateConfigField('activeSeason', e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-purple-300 font-bold bg-white text-xs focus:outline-none focus:ring-1 focus:ring-purple-900"
+                >
+                  <option value="regular">✨ Todo el Año (Clásico)</option>
+                  <option value="navidad">🎄 Navidad & Fin de Año</option>
+                  <option value="san-valentin">💖 San Valentín & Amor</option>
+                  <option value="madres">🌸 Día de las Madres</option>
+                  <option value="halloween">🎃 Halloween & Día de Muertos</option>
+                  <option value="primavera">🐣 Primavera & Pascua</option>
+                </select>
+                <p className="text-[11px] text-stone-500 mt-1">
+                  Al cambiar de temporada, las 3 fotos del inicio, la atmósfera festiva y los distintivos se adaptan automáticamente.
+                </p>
+              </div>
+
               <div>
                 <label className="font-bold text-stone-700 block mb-1">
                   Nombre de la Tienda

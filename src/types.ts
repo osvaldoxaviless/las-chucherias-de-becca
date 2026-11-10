@@ -111,6 +111,37 @@ export interface PortfolioItem {
   description: string;
 }
 
+export type SeasonId = 
+  | 'regular'
+  | 'navidad'
+  | 'san-valentin'
+  | 'madres'
+  | 'halloween'
+  | 'primavera';
+
+export interface HeroCardConfig {
+  id: 'left' | 'right' | 'bottom';
+  image: string;
+  label: string;
+  badgeBgColor?: string;
+  alt?: string;
+}
+
+export interface SeasonConfig {
+  id: SeasonId;
+  name: string;
+  icon: string;
+  badge: string;
+  accentColor: string;
+  confettiColors: string[];
+  seasonalAtmosphere?: 'none' | 'snow' | 'hearts' | 'flowers' | 'bats' | 'sparkles';
+  cards: {
+    left: HeroCardConfig;
+    right: HeroCardConfig;
+    bottom: HeroCardConfig;
+  };
+}
+
 export interface StoreConfig {
   storeName: string;
   instagramHandle: string;
@@ -141,4 +172,8 @@ export interface StoreConfig {
   hiddenBlocks?: string[];
   customTierImages?: Record<string, string>;
   portfolioItems?: PortfolioItem[];
+  // Capas de Personalización por Temporada
+  activeSeason?: SeasonId;
+  seasons?: Record<SeasonId, SeasonConfig>;
+  enableSeasonalAtmosphere?: boolean;
 }

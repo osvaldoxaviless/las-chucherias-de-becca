@@ -1,72 +1,182 @@
 import React from 'react';
+import { Camera, Edit3 } from 'lucide-react';
+import { HeroCardConfig } from '../types';
+import { DEFAULT_SEASONS } from '../data/seasons';
 
-export const HeroPastryPhotos: React.FC = () => {
+interface Props {
+  cards?: {
+    left: HeroCardConfig;
+    right: HeroCardConfig;
+    bottom: HeroCardConfig;
+  };
+  isEditMode?: boolean;
+  onTriggerChangeCardImage?: (cardId: 'left' | 'right' | 'bottom') => void;
+  onUpdateCardLabel?: (cardId: 'left' | 'right' | 'bottom', newLabel: string) => void;
+}
+
+export const HeroPastryPhotos: React.FC<Props> = ({
+  cards = DEFAULT_SEASONS.regular.cards,
+  isEditMode = false,
+  onTriggerChangeCardImage,
+  onUpdateCardLabel,
+}) => {
+  const leftCard = cards.left || DEFAULT_SEASONS.regular.cards.left;
+  const rightCard = cards.right || DEFAULT_SEASONS.regular.cards.right;
+  const bottomCard = cards.bottom || DEFAULT_SEASONS.regular.cards.bottom;
+
   return (
     <>
       {/* ==================================================================== */}
-      {/* FOTO 1 (IZQUIERDA): PASTEL REAL DE BECCA (FONDO BLANCO PURO)         */}
+      {/* FOTO 1 (IZQUIERDA): PASTEL REAL / DESTACADO TEMPORAL                  */}
       {/* ==================================================================== */}
       <div 
         className="hidden lg:flex absolute left-4 xl:left-12 top-1/2 -translate-y-1/2 z-10 flex-col items-center select-none pointer-events-auto animate-float-slow group"
-        title="Pastel personalizado de Becca con receta artesanal"
+        title={leftCard.alt || leftCard.label}
       >
-        <div className="w-28 h-28 xl:w-36 xl:h-36 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:rotate-2 transition-all duration-300">
-          <div className="w-full h-full rounded-2xl overflow-hidden bg-white flex items-center justify-center">
+        <div className={`w-28 h-28 xl:w-36 xl:h-36 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 relative ${
+          isEditMode ? 'ring-2 ring-[#99ffcc] ring-offset-2 border-dashed' : ''
+        }`}>
+          <div className="w-full h-full rounded-2xl overflow-hidden bg-white flex items-center justify-center relative">
             <img 
-              src="/images/cake-monkey.jpg" 
-              alt="Pastel temático artesanal de Becca" 
+              src={leftCard.image} 
+              alt={leftCard.alt || leftCard.label} 
               className="w-full h-full object-contain"
               loading="eager"
             />
+            {isEditMode && (
+              <button
+                type="button"
+                onClick={() => onTriggerChangeCardImage?.('left')}
+                className="absolute inset-0 bg-black/55 text-white flex flex-col items-center justify-center gap-1 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl p-1 text-center"
+                title="Cambiar fotografía del postre izquierdo"
+              >
+                <Camera className="w-4 h-4 text-[#99ffcc]" />
+                <span className="text-[10px] font-bold">Cambiar Foto</span>
+              </button>
+            )}
           </div>
         </div>
-        <div className="px-3 py-1 rounded-full bg-white border border-black text-[10px] font-black text-black shadow-xs -mt-2.5 group-hover:bg-[#99ffcc] transition-colors">
-          <span>🎂 Pasteles de Diseño</span>
-        </div>
+
+        {/* Etiqueta / Tag inferior */}
+        {isEditMode ? (
+          <div className="px-2 py-0.5 rounded-full bg-white border border-black shadow-xs -mt-2.5 z-20 flex items-center gap-1">
+            <input
+              type="text"
+              value={leftCard.label}
+              onChange={(e) => onUpdateCardLabel?.('left', e.target.value)}
+              className="text-[10px] font-black text-black bg-transparent w-28 text-center focus:outline-none"
+              placeholder="Etiqueta..."
+            />
+            <Edit3 className="w-2.5 h-2.5 text-stone-500" />
+          </div>
+        ) : (
+          <div 
+            className="px-3 py-1 rounded-full bg-white border border-black text-[10px] font-black text-black shadow-xs -mt-2.5 transition-colors"
+            style={{ backgroundColor: leftCard.badgeBgColor ? undefined : undefined }}
+          >
+            <span>{leftCard.label}</span>
+          </div>
+        )}
       </div>
 
       {/* ==================================================================== */}
-      {/* FOTO 2 (DERECHA): REPOSTERÍA / CASITA ARTESANAL (FONDO BLANCO PURO)  */}
+      {/* FOTO 2 (DERECHA): REPOSTERÍA / DESTACADO TEMPORAL                    */}
       {/* ==================================================================== */}
       <div 
         className="hidden lg:flex absolute right-4 xl:right-12 top-1/2 -translate-y-1/2 z-10 flex-col items-center select-none pointer-events-auto animate-float-delayed group"
-        title="Casita de galleta y repostería artesanal"
+        title={rightCard.alt || rightCard.label}
       >
-        <div className="w-28 h-28 xl:w-36 xl:h-36 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:-rotate-2 transition-all duration-300">
-          <div className="w-full h-full rounded-2xl overflow-hidden bg-white flex items-center justify-center">
+        <div className={`w-28 h-28 xl:w-36 xl:h-36 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:-rotate-2 transition-all duration-300 relative ${
+          isEditMode ? 'ring-2 ring-[#ffcc99] ring-offset-2 border-dashed' : ''
+        }`}>
+          <div className="w-full h-full rounded-2xl overflow-hidden bg-white flex items-center justify-center relative">
             <img 
-              src="/images/navidad/navidad-2.jpg" 
-              alt="Casita de galleta y repostería artesanal" 
+              src={rightCard.image} 
+              alt={rightCard.alt || rightCard.label} 
               className="w-full h-full object-contain"
               loading="eager"
             />
+            {isEditMode && (
+              <button
+                type="button"
+                onClick={() => onTriggerChangeCardImage?.('right')}
+                className="absolute inset-0 bg-black/55 text-white flex flex-col items-center justify-center gap-1 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl p-1 text-center"
+                title="Cambiar fotografía del postre derecho"
+              >
+                <Camera className="w-4 h-4 text-[#ffcc99]" />
+                <span className="text-[10px] font-bold">Cambiar Foto</span>
+              </button>
+            )}
           </div>
         </div>
-        <div className="px-3 py-1 rounded-full bg-white border border-black text-[10px] font-black text-black shadow-xs -mt-2.5 group-hover:bg-[#ffcc99] transition-colors">
-          <span>🍪 Repostería Artesanal</span>
-        </div>
+
+        {/* Etiqueta / Tag inferior */}
+        {isEditMode ? (
+          <div className="px-2 py-0.5 rounded-full bg-white border border-black shadow-xs -mt-2.5 z-20 flex items-center gap-1">
+            <input
+              type="text"
+              value={rightCard.label}
+              onChange={(e) => onUpdateCardLabel?.('right', e.target.value)}
+              className="text-[10px] font-black text-black bg-transparent w-28 text-center focus:outline-none"
+              placeholder="Etiqueta..."
+            />
+            <Edit3 className="w-2.5 h-2.5 text-stone-500" />
+          </div>
+        ) : (
+          <div className="px-3 py-1 rounded-full bg-white border border-black text-[10px] font-black text-black shadow-xs -mt-2.5 transition-colors">
+            <span>{rightCard.label}</span>
+          </div>
+        )}
       </div>
 
       {/* ==================================================================== */}
-      {/* FOTO 3 (ACENTO INFERIOR): CUPCAKES REALES EN FONDO BLANCO           */}
+      {/* FOTO 3 (ACENTO INFERIOR): ANTOJITO O CUPCAKE HORNEADO AL DÍA         */}
       {/* ==================================================================== */}
       <div 
-        className="hidden 2xl:flex absolute left-28 bottom-4 z-10 flex-col items-center select-none pointer-events-auto animate-float-gentle group"
-        title="Cupcakes suaves horneados al día"
+        className="hidden xl:flex absolute left-24 xl:left-28 bottom-4 z-10 flex-col items-center select-none pointer-events-auto animate-float-gentle group"
+        title={bottomCard.alt || bottomCard.label}
       >
-        <div className="w-24 h-24 rounded-2xl bg-white border-2 border-black p-1.5 shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
-          <div className="w-full h-full rounded-xl overflow-hidden bg-white flex items-center justify-center">
+        <div className={`w-24 h-24 rounded-2xl bg-white border-2 border-black p-1.5 shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 relative ${
+          isEditMode ? 'ring-2 ring-[#7bbbff] ring-offset-2 border-dashed' : ''
+        }`}>
+          <div className="w-full h-full rounded-xl overflow-hidden bg-white flex items-center justify-center relative">
             <img 
-              src="/images/navidad/navidad-5.jpg" 
-              alt="Cupcakes decorados artesanalmente" 
+              src={bottomCard.image} 
+              alt={bottomCard.alt || bottomCard.label} 
               className="w-full h-full object-contain"
               loading="lazy"
             />
+            {isEditMode && (
+              <button
+                type="button"
+                onClick={() => onTriggerChangeCardImage?.('bottom')}
+                className="absolute inset-0 bg-black/55 text-white flex flex-col items-center justify-center gap-1 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity rounded-xl p-1 text-center"
+                title="Cambiar fotografía del postre inferior"
+              >
+                <Camera className="w-3.5 h-3.5 text-[#7bbbff]" />
+                <span className="text-[9px] font-bold">Cambiar Foto</span>
+              </button>
+            )}
           </div>
         </div>
-        <div className="px-2.5 py-0.5 rounded-full bg-white border border-black text-[9px] font-black text-black shadow-xs -mt-2">
-          <span>🧁 Horneado al Día</span>
-        </div>
+
+        {/* Etiqueta / Tag inferior */}
+        {isEditMode ? (
+          <div className="px-2 py-0.5 rounded-full bg-white border border-black shadow-xs -mt-2 z-20 flex items-center gap-1">
+            <input
+              type="text"
+              value={bottomCard.label}
+              onChange={(e) => onUpdateCardLabel?.('bottom', e.target.value)}
+              className="text-[9px] font-black text-black bg-transparent w-24 text-center focus:outline-none"
+              placeholder="Etiqueta..."
+            />
+            <Edit3 className="w-2.5 h-2.5 text-stone-500" />
+          </div>
+        ) : (
+          <div className="px-2.5 py-0.5 rounded-full bg-white border border-black text-[9px] font-black text-black shadow-xs -mt-2">
+            <span>{bottomCard.label}</span>
+          </div>
+        )}
       </div>
     </>
   );

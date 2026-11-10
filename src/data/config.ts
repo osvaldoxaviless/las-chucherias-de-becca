@@ -1,5 +1,6 @@
 import { StoreConfig } from '../types';
 import { DEFAULT_PORTFOLIO_ITEMS } from './portfolio';
+import { DEFAULT_SEASONS } from './seasons';
 
 export const DEFAULT_STORE_CONFIG: StoreConfig = {
   storeName: 'Las chucherías de Becca',
@@ -31,4 +32,8 @@ export const DEFAULT_STORE_CONFIG: StoreConfig = {
     '2pisos': '/images/cake-wedding.jpg',
   },
   portfolioItems: DEFAULT_PORTFOLIO_ITEMS,
+  // Capas de Personalización por Temporada
+  activeSeason: 'regular',
+  seasons: DEFAULT_SEASONS,
+  enableSeasonalAtmosphere: true,
 };

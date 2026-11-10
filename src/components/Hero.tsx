@@ -1,7 +1,9 @@
 import React from 'react';
-import { ArrowDown, Sparkles, Edit3 } from 'lucide-react';
-import { StoreConfig } from '../types';
+import { ArrowDown, Sparkles, Edit3, Settings, Layers } from 'lucide-react';
+import { HeroCardConfig, SeasonId, StoreConfig } from '../types';
 import { HeroPastryPhotos } from './HeroPastryPhotos';
+import { SeasonalAtmosphere } from './SeasonalAtmosphere';
+import { getActiveSeasonConfig, SEASONS_LIST } from '../data/seasons';
 
 interface Props {
   config: StoreConfig;
@@ -9,6 +11,10 @@ interface Props {
   onScrollToCustomizer: () => void;
   isEditMode?: boolean;
   onUpdateField?: (field: keyof StoreConfig, value: string) => void;
+  onTriggerChangeCardImage?: (cardId: 'left' | 'right' | 'bottom') => void;
+  onUpdateCardLabel?: (cardId: 'left' | 'right' | 'bottom', label: string) => void;
+  onSelectSeason?: (seasonId: SeasonId) => void;
+  onOpenSeasonModal?: () => void;
 }
 
 export const Hero: React.FC<Props> = ({
@@ -17,39 +23,117 @@ export const Hero: React.FC<Props> = ({
   onScrollToCustomizer,
   isEditMode = false,
   onUpdateField,
+  onTriggerChangeCardImage,
+  onUpdateCardLabel,
+  onSelectSeason,
+  onOpenSeasonModal,
 }) => {
+  const seasonData = getActiveSeasonConfig(config);
+  const confetti = seasonData.confettiColors || ['#ff99cc', '#7bbbff', '#ffcc99', '#99ffcc', '#d8b4fe'];
+
   return (
     <section className="relative overflow-hidden bg-[#f5f4f0] border-b border-black/10 py-16 sm:py-24">
       
-      {/* Fotografías Reales de Postres con Fondo Blanco (Pasteles y Galletas de Becca) */}
-      <HeroPastryPhotos />
+      {/* Capa de Atmósfera de Temporada (Nieve, Corazones, Flores, Murciélagos, Destellos) */}
+      <SeasonalAtmosphere
+        atmosphere={seasonData.seasonalAtmosphere}
+        enabled={config.enableSeasonalAtmosphere ?? true}
+      />
 
-      {/* Hatch Confetti Dots decorativos con temática pastel unicornio (DESIGN.md) */}
-      <div className="absolute top-10 left-10 w-3 h-3 rounded-full bg-[#ff99cc] pointer-events-none hidden sm:block" />
-      <div className="absolute top-20 right-16 w-3.5 h-3.5 rounded-full bg-[#7bbbff] pointer-events-none hidden sm:block" />
-      <div className="absolute bottom-16 left-1/4 w-2.5 h-2.5 rounded-full bg-[#ffcc99] pointer-events-none hidden sm:block" />
-      <div className="absolute top-1/2 right-12 w-3 h-3 rounded-full bg-[#99ffcc] pointer-events-none hidden sm:block" />
-      <div className="absolute top-1/3 left-16 w-2.5 h-2.5 rounded-full bg-[#d8b4fe] pointer-events-none hidden sm:block" />
+      {/* Fotografías Reales de Postres con Fondo Blanco (Pasteles y Galletas de Becca) */}
+      <HeroPastryPhotos
+        cards={seasonData.cards}
+        isEditMode={isEditMode}
+        onTriggerChangeCardImage={onTriggerChangeCardImage}
+        onUpdateCardLabel={onUpdateCardLabel}
+      />
+
+      {/* Confetti Dots dinámicos sincronizados con la paleta de la temporada */}
+      <div 
+        className="absolute top-10 left-10 w-3 h-3 rounded-full pointer-events-none hidden sm:block transition-colors duration-500" 
+        style={{ backgroundColor: confetti[0] || '#ff99cc' }}
+      />
+      <div 
+        className="absolute top-20 right-16 w-3.5 h-3.5 rounded-full pointer-events-none hidden sm:block transition-colors duration-500" 
+        style={{ backgroundColor: confetti[1] || '#7bbbff' }}
+      />
+      <div 
+        className="absolute bottom-16 left-1/4 w-2.5 h-2.5 rounded-full pointer-events-none hidden sm:block transition-colors duration-500" 
+        style={{ backgroundColor: confetti[2] || '#ffcc99' }}
+      />
+      <div 
+        className="absolute top-1/2 right-12 w-3 h-3 rounded-full pointer-events-none hidden sm:block transition-colors duration-500" 
+        style={{ backgroundColor: confetti[3] || '#99ffcc' }}
+      />
+      <div 
+        className="absolute top-1/3 left-16 w-2.5 h-2.5 rounded-full pointer-events-none hidden sm:block transition-colors duration-500" 
+        style={{ backgroundColor: confetti[4] || '#d8b4fe' }}
+      />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 text-center space-y-6">
         
+        {/* Barra de Selección de Capa de Temporada en Modo Edición */}
+        {isEditMode && (
+          <div className="inline-flex flex-wrap items-center justify-center gap-1.5 p-2 rounded-2xl bg-white border-2 border-dashed border-black/40 shadow-xs mb-2">
+            <span className="text-[11px] font-black text-black uppercase tracking-wider px-2 flex items-center gap-1">
+              <Layers className="w-3.5 h-3.5 text-black" />
+              <span>Temporada:</span>
+            </span>
+            {SEASONS_LIST.map((season) => {
+              const isSelected = (config.activeSeason || 'regular') === season.id;
+              return (
+                <button
+                  key={season.id}
+                  type="button"
+                  onClick={() => onSelectSeason?.(season.id)}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all border ${
+                    isSelected
+                      ? 'bg-[#160042] text-[#99ffcc] border-black shadow-xs'
+                      : 'bg-[#faf9f5] hover:bg-stone-100 text-stone-700 border-black/10'
+                  }`}
+                  title={`Cambiar a ${season.name}`}
+                >
+                  <span>{season.icon} {season.name}</span>
+                </button>
+              );
+            })}
+            {onOpenSeasonModal && (
+              <button
+                type="button"
+                onClick={onOpenSeasonModal}
+                className="px-2.5 py-1 rounded-xl text-xs font-black bg-[#99ffcc] hover:bg-[#80ffbf] text-black border border-black shadow-xs transition-all flex items-center gap-1"
+                title="Configurar fotos y capas de personalización para cada temporada"
+              >
+                <Settings className="w-3 h-3 text-black" />
+                <span>Capas</span>
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Chip Lúdico Superior */}
         {isEditMode ? (
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border-2 border-dashed border-black/60 shadow-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#99ffcc] border border-black" />
+            <span 
+              className="w-2.5 h-2.5 rounded-full border border-black" 
+              style={{ backgroundColor: seasonData.accentColor || '#99ffcc' }}
+            />
             <input
               type="text"
               value={config.heroBadge || ''}
               onChange={(e) => onUpdateField?.('heroBadge', e.target.value)}
-              placeholder="🦄 Distintivo o Slogan superior..."
+              placeholder={seasonData.badge || '🦄 Distintivo o Slogan superior...'}
               className="text-xs font-bold text-black bg-transparent focus:outline-none text-center min-w-[240px]"
             />
             <Edit3 className="w-3 h-3 text-stone-400" />
           </div>
         ) : (
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-black text-xs font-bold text-black shadow-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#99ffcc] border border-black" />
-            <span>{config.heroBadge || `🦄 El Paraíso de los Postres • ${config.city}`}</span>
+            <span 
+              className="w-2.5 h-2.5 rounded-full border border-black" 
+              style={{ backgroundColor: seasonData.accentColor || '#99ffcc' }}
+            />
+            <span>{config.heroBadge || seasonData.badge || `🦄 El Paraíso de los Postres • ${config.city}`}</span>
           </div>
         )}
 

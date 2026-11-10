@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search, ArrowRight, Plus } from 'lucide-react';
-import { Product, ProductCategory, CartItem, StoreConfig, PortfolioItem } from './types';
+import { Product, ProductCategory, CartItem, StoreConfig, PortfolioItem, SeasonId } from './types';
 import { INITIAL_PRODUCTS } from './data/products';
 import { DEFAULT_STORE_CONFIG } from './data/config';
 import { DEFAULT_PORTFOLIO_ITEMS } from './data/portfolio';
+import { DEFAULT_SEASONS } from './data/seasons';
 import { BannerAnnouncement } from './components/BannerAnnouncement';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -24,6 +25,7 @@ import { AddProductModal } from './components/AddProductModal';
 import { ImageCropModal } from './components/ImageCropModal';
 import { CanvasBlockWrapper } from './components/CanvasBlockWrapper';
 import { BlocksOrganizerModal } from './components/BlocksOrganizerModal';
+import { SeasonSelectorModal } from './components/SeasonSelectorModal';
 import { 
   subscribeToProductsCloud, 
   saveProductsCloud, 
@@ -65,6 +67,11 @@ export function App() {
       return {
         ...DEFAULT_STORE_CONFIG,
         ...parsed,
+        activeSeason: parsed.activeSeason || DEFAULT_STORE_CONFIG.activeSeason || 'regular',
+        seasons: {
+          ...DEFAULT_STORE_CONFIG.seasons,
+          ...(parsed.seasons || {}),
+        },
         address: (parsed.address && !parsed.address.includes('El Oro 112')) ? parsed.address : 'Toluca, Estado de México',
         adminPin: (parsed.adminPin && String(parsed.adminPin).trim()) || DEFAULT_STORE_CONFIG.adminPin || '2026',
       };
@@ -109,16 +116,19 @@ export function App() {
   const [isQuickSettingsOpen, setIsQuickSettingsOpen] = useState(false);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [isBlocksOrganizerOpen, setIsBlocksOrganizerOpen] = useState(false);
+  const [isSeasonModalOpen, setIsSeasonModalOpen] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [originalSnapshot, setOriginalSnapshot] = useState<{ config: StoreConfig; products: Product[] } | null>(null);
 
-  // Image Cropping for in-place photo adjustments (products, cake tiers, portfolio references)
+  // Image Cropping for in-place photo adjustments (products, cake tiers, portfolio references, hero seasonal cards)
   const [cropModalData, setCropModalData] = useState<{
     isOpen: boolean;
     imageSrc: string | null;
     productId?: string;
     tierId?: string;
     portfolioId?: string;
+    heroCardId?: 'left' | 'right' | 'bottom';
+    seasonId?: SeasonId;
     productName?: string;
   }>({
     isOpen: false,
@@ -512,6 +522,85 @@ export function App() {
     setToastMessage(`"${newItem.title}" añadida a la galería de referencias.`);
   };
 
+  const handleTriggerChangeHeroCardImage = (cardId: 'left' | 'right' | 'bottom', targetSeasonId?: SeasonId) => {
+    const season = targetSeasonId || config.activeSeason || 'regular';
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        setCropModalData({
+          isOpen: true,
+          imageSrc: dataUrl,
+          heroCardId: cardId,
+          seasonId: season,
+          productName: `Foto ${cardId === 'left' ? 'Izquierda' : cardId === 'right' ? 'Derecha' : 'Inferior'} (${DEFAULT_SEASONS[season]?.name || season})`,
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  };
+
+  const handleUpdateHeroCardLabel = (cardId: 'left' | 'right' | 'bottom', label: string, targetSeasonId?: SeasonId) => {
+    const season = targetSeasonId || config.activeSeason || 'regular';
+    setConfig((prev) => {
+      const prevSeasons = prev.seasons || DEFAULT_SEASONS;
+      const currentSeasonConfig = prevSeasons[season] || DEFAULT_SEASONS[season] || DEFAULT_SEASONS.regular;
+      return {
+        ...prev,
+        seasons: {
+          ...prevSeasons,
+          [season]: {
+            ...currentSeasonConfig,
+            cards: {
+              ...currentSeasonConfig.cards,
+              [cardId]: {
+                ...currentSeasonConfig.cards[cardId],
+                label,
+              },
+            },
+          },
+        },
+      };
+    });
+    setHasUnsavedChanges(true);
+  };
+
+  const handleSelectSeason = (seasonId: SeasonId) => {
+    setConfig((prev) => ({
+      ...prev,
+      activeSeason: seasonId,
+    }));
+    setHasUnsavedChanges(true);
+    const seasonObj = DEFAULT_SEASONS[seasonId];
+    setToastMessage(`Temporada "${seasonObj?.name || seasonId}" activada en la tienda.`);
+  };
+
+  const handleToggleSeasonalAtmosphere = (enabled: boolean) => {
+    setConfig((prev) => ({
+      ...prev,
+      enableSeasonalAtmosphere: enabled,
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleResetSeasonDefaults = (seasonId: SeasonId) => {
+    setConfig((prev) => ({
+      ...prev,
+      seasons: {
+        ...(prev.seasons || DEFAULT_SEASONS),
+        [seasonId]: DEFAULT_SEASONS[seasonId],
+      },
+    }));
+    setHasUnsavedChanges(true);
+    setToastMessage(`Fotos de la temporada "${DEFAULT_SEASONS[seasonId]?.name || seasonId}" restablecidas.`);
+  };
+
   const handleSaveCroppedImageInLiveEdit = (croppedDataUrl: string) => {
     if (cropModalData.productId) {
       setProducts((prev) =>
@@ -543,6 +632,31 @@ export function App() {
       });
       setHasUnsavedChanges(true);
       setToastMessage('Foto de referencia actualizada con éxito.');
+    } else if (cropModalData.heroCardId) {
+      const season = cropModalData.seasonId || config.activeSeason || 'regular';
+      const cardId = cropModalData.heroCardId;
+      setConfig((prev) => {
+        const prevSeasons = prev.seasons || DEFAULT_SEASONS;
+        const currentSeasonConfig = prevSeasons[season] || DEFAULT_SEASONS[season] || DEFAULT_SEASONS.regular;
+        return {
+          ...prev,
+          seasons: {
+            ...prevSeasons,
+            [season]: {
+              ...currentSeasonConfig,
+              cards: {
+                ...currentSeasonConfig.cards,
+                [cardId]: {
+                  ...currentSeasonConfig.cards[cardId],
+                  image: croppedDataUrl,
+                },
+              },
+            },
+          },
+        };
+      });
+      setHasUnsavedChanges(true);
+      setToastMessage('Foto de portada actualizada para la temporada.');
     }
     setCropModalData({ isOpen: false, imageSrc: null });
   };
@@ -575,6 +689,9 @@ export function App() {
           onAddNewProduct={() => setIsAddProductOpen(true)}
           onOpenQuickSettings={() => setIsQuickSettingsOpen(true)}
           onOpenBlocksOrganizer={() => setIsBlocksOrganizerOpen(true)}
+          onOpenSeasonModal={() => setIsSeasonModalOpen(true)}
+          activeSeasonIcon={DEFAULT_SEASONS[config.activeSeason || 'regular']?.icon}
+          activeSeasonName={DEFAULT_SEASONS[config.activeSeason || 'regular']?.name}
           hasUnsavedChanges={hasUnsavedChanges}
         />
       )}
@@ -616,6 +733,10 @@ export function App() {
                 onScrollToCustomizer={scrollToCustomizer}
                 isEditMode={isEditMode}
                 onUpdateField={handleUpdateConfigField}
+                onTriggerChangeCardImage={handleTriggerChangeHeroCardImage}
+                onUpdateCardLabel={handleUpdateHeroCardLabel}
+                onSelectSeason={handleSelectSeason}
+                onOpenSeasonModal={() => setIsSeasonModalOpen(true)}
               />
             );
           } else if (blockId === 'catalog') {
@@ -838,6 +959,18 @@ export function App() {
         onMoveBlock={handleMoveBlock}
         onToggleHideBlock={handleToggleHideBlock}
         onClose={() => setIsBlocksOrganizerOpen(false)}
+      />
+
+      {/* Seasonal Customization Layers Modal in Live Edit */}
+      <SeasonSelectorModal
+        isOpen={isSeasonModalOpen}
+        config={config}
+        onSelectSeason={handleSelectSeason}
+        onTriggerChangeCardImage={handleTriggerChangeHeroCardImage}
+        onUpdateCardLabel={handleUpdateHeroCardLabel}
+        onToggleAtmosphere={handleToggleSeasonalAtmosphere}
+        onResetSeasonDefaults={handleResetSeasonDefaults}
+        onClose={() => setIsSeasonModalOpen(false)}
       />
 
       {/* Image Crop Modal in Live Edit */}

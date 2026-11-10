@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StoreConfig } from '../types';
-import { X, Check, KeyRound, MessageCircle, MapPin, Store, Instagram, AlertTriangle } from 'lucide-react';
+import { X, Check, KeyRound, MessageCircle, MapPin, Store, Instagram, AlertTriangle, Sparkles } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
@@ -169,6 +169,29 @@ export const QuickSettingsModal: React.FC<Props> = ({
                 className="w-full px-3 py-2 rounded-lg border border-stone-300 font-medium focus:outline-none focus:ring-2 focus:ring-black bg-white"
               />
             </div>
+          </div>
+
+          {/* Active Season Layer */}
+          <div className="p-3 rounded-xl bg-purple-50/70 border border-purple-200/80 space-y-1.5">
+            <label className="font-bold text-stone-800 flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-purple-700" />
+                <span>Capa de Temporada Activa</span>
+              </span>
+              <span className="text-[10px] text-stone-500 font-normal">Fotos y atmósfera</span>
+            </label>
+            <select
+              value={formConfig.activeSeason || 'regular'}
+              onChange={(e) => handleFieldChange('activeSeason', e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-stone-300 font-bold bg-white text-xs focus:outline-none focus:ring-2 focus:ring-black"
+            >
+              <option value="regular">✨ Todo el Año (Clásico)</option>
+              <option value="navidad">🎄 Navidad & Fin de Año</option>
+              <option value="san-valentin">💖 San Valentín & Amor</option>
+              <option value="madres">🌸 Día de las Madres</option>
+              <option value="halloween">🎃 Halloween & Día de Muertos</option>
+              <option value="primavera">🐣 Primavera & Pascua</option>
+            </select>
           </div>
 
           {/* Store status switch */}

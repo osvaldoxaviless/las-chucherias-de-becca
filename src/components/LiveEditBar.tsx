@@ -1,5 +1,5 @@
 import React from 'react';
-import { Save, Plus, Settings, X, Sparkles, LayoutList, LayoutGrid } from 'lucide-react';
+import { Save, Plus, Settings, X, Sparkles, LayoutList, LayoutGrid, Layers } from 'lucide-react';
 
 interface Props {
   onSaveAndExit: () => void;
@@ -7,6 +7,9 @@ interface Props {
   onAddNewProduct: () => void;
   onOpenQuickSettings: () => void;
   onOpenBlocksOrganizer?: () => void;
+  onOpenSeasonModal?: () => void;
+  activeSeasonIcon?: string;
+  activeSeasonName?: string;
   hasUnsavedChanges?: boolean;
 }
 
@@ -16,6 +19,9 @@ export const LiveEditBar: React.FC<Props> = ({
   onAddNewProduct,
   onOpenQuickSettings,
   onOpenBlocksOrganizer,
+  onOpenSeasonModal,
+  activeSeasonIcon,
+  activeSeasonName,
   hasUnsavedChanges = false,
 }) => {
   return (
@@ -62,6 +68,20 @@ export const LiveEditBar: React.FC<Props> = ({
             >
               <LayoutGrid className="w-3.5 h-3.5 text-[#99ffcc]" />
               <span className="hidden sm:inline">Bloques</span>
+            </button>
+          )}
+
+          {/* Seasonal Customization Layers */}
+          {onOpenSeasonModal && (
+            <button
+              type="button"
+              onClick={onOpenSeasonModal}
+              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-colors border border-white/20 active:scale-95"
+              title="Configurar fotos y capas de personalización por temporada"
+            >
+              <Layers className="w-3.5 h-3.5 text-[#99ffcc]" />
+              <span className="hidden md:inline">Temporada {activeSeasonIcon ? `${activeSeasonIcon}` : ''}</span>
+              <span className="md:hidden">{activeSeasonIcon || 'Temporada'}</span>
             </button>
           )}
 
