@@ -33,7 +33,7 @@ export const HeroPastryPhotos: React.FC<Props> = ({
         className="hidden lg:flex absolute left-0 xl:left-2 2xl:left-4 top-1/2 -translate-y-1/2 z-10 flex-col items-center select-none pointer-events-auto animate-float-slow group"
         title={leftCard.alt || leftCard.label}
       >
-        <div className={`w-36 h-36 lg:w-40 lg:h-40 xl:w-44 xl:h-44 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 relative ${
+        <div className={`w-32 h-32 xl:w-40 xl:h-40 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 relative ${
           isEditMode ? 'ring-2 ring-[#99ffcc] ring-offset-2 border-dashed' : ''
         }`}>
           <div className="w-full h-full rounded-2xl overflow-hidden bg-white flex items-center justify-center relative shadow-inner">
@@ -85,7 +85,7 @@ export const HeroPastryPhotos: React.FC<Props> = ({
         className="hidden lg:flex absolute right-0 xl:right-2 2xl:right-4 top-1/2 -translate-y-1/2 z-10 flex-col items-center select-none pointer-events-auto animate-float-delayed group"
         title={rightCard.alt || rightCard.label}
       >
-        <div className={`w-36 h-36 lg:w-40 lg:h-40 xl:w-44 xl:h-44 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:-rotate-2 transition-all duration-300 relative ${
+        <div className={`w-32 h-32 xl:w-40 xl:h-40 rounded-3xl bg-white border-2 border-black p-2 shadow-xl group-hover:scale-105 group-hover:-rotate-2 transition-all duration-300 relative ${
           isEditMode ? 'ring-2 ring-[#ffcc99] ring-offset-2 border-dashed' : ''
         }`}>
           <div className="w-full h-full rounded-2xl overflow-hidden bg-white flex items-center justify-center relative shadow-inner">
@@ -132,10 +132,10 @@ export const HeroPastryPhotos: React.FC<Props> = ({
       {/* FOTO 3 (ACENTO INFERIOR): ANTOJITO O CUPCAKE HORNEADO AL DÍA         */}
       {/* ==================================================================== */}
       <div 
-        className="hidden xl:flex absolute left-6 2xl:left-12 -bottom-2 z-10 flex-col items-center select-none pointer-events-auto animate-float-gentle group"
+        className="hidden xl:flex absolute left-2 2xl:left-6 -bottom-3 z-10 flex-col items-center select-none pointer-events-auto animate-float-gentle group"
         title={bottomCard.alt || bottomCard.label}
       >
-        <div className={`w-32 h-32 xl:w-36 xl:h-36 rounded-2xl bg-white border-2 border-black p-2 shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 relative ${
+        <div className={`w-28 h-28 xl:w-32 xl:h-32 rounded-2xl bg-white border-2 border-black p-2 shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 relative ${
           isEditMode ? 'ring-2 ring-[#7bbbff] ring-offset-2 border-dashed' : ''
         }`}>
           <div className="w-full h-full rounded-xl overflow-hidden bg-white flex items-center justify-center relative shadow-inner">

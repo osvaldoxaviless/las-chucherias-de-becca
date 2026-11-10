@@ -63,7 +63,7 @@ export const Hero: React.FC<Props> = ({
       />
 
       {/* Contenedor Principal Relativo que enmarca los postres y el texto juntos */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         
         {/* Fotografías Reales de Postres con Fondo Blanco (enmarcan la portada) */}
         <HeroPastryPhotos
@@ -73,7 +73,7 @@ export const Hero: React.FC<Props> = ({
           onUpdateCardLabel={onUpdateCardLabel}
         />
 
-        <div className="max-w-3xl xl:max-w-4xl mx-auto text-center space-y-6">
+        <div className="max-w-xl xl:max-w-2xl mx-auto text-center space-y-6 relative z-20">
         
         {/* Barra de Selección de Capa de Temporada en Modo Edición */}
         {isEditMode && (
