@@ -32,20 +32,12 @@ export const Hero: React.FC<Props> = ({
   const confetti = seasonData.confettiColors || ['#ff99cc', '#7bbbff', '#ffcc99', '#99ffcc', '#d8b4fe'];
 
   return (
-    <section className="relative overflow-hidden bg-[#f5f4f0] border-b border-black/10 py-16 sm:py-24">
+    <section className="relative bg-[#f5f4f0] border-b border-black/10 pt-12 sm:pt-16 pb-20 sm:pb-28 overflow-x-clip">
       
       {/* Capa de Atmósfera de Temporada (Nieve, Corazones, Flores, Murciélagos, Destellos) */}
       <SeasonalAtmosphere
         atmosphere={seasonData.seasonalAtmosphere}
         enabled={config.enableSeasonalAtmosphere ?? true}
-      />
-
-      {/* Fotografías Reales de Postres con Fondo Blanco (Pasteles y Galletas de Becca) */}
-      <HeroPastryPhotos
-        cards={seasonData.cards}
-        isEditMode={isEditMode}
-        onTriggerChangeCardImage={onTriggerChangeCardImage}
-        onUpdateCardLabel={onUpdateCardLabel}
       />
 
       {/* Confetti Dots dinámicos sincronizados con la paleta de la temporada */}
@@ -70,7 +62,18 @@ export const Hero: React.FC<Props> = ({
         style={{ backgroundColor: confetti[4] || '#d8b4fe' }}
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 text-center space-y-6">
+      {/* Contenedor Principal Relativo que enmarca los postres y el texto juntos */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+        
+        {/* Fotografías Reales de Postres con Fondo Blanco (enmarcan la portada) */}
+        <HeroPastryPhotos
+          cards={seasonData.cards}
+          isEditMode={isEditMode}
+          onTriggerChangeCardImage={onTriggerChangeCardImage}
+          onUpdateCardLabel={onUpdateCardLabel}
+        />
+
+        <div className="max-w-3xl xl:max-w-4xl mx-auto text-center space-y-6">
         
         {/* Barra de Selección de Capa de Temporada en Modo Edición */}
         {isEditMode && (
@@ -244,6 +247,7 @@ export const Hero: React.FC<Props> = ({
         </p>
 
       </div>
-    </section>
+    </div>
+  </section>
   );
 };
