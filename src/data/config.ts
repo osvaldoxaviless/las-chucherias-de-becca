@@ -7,7 +7,7 @@ export const DEFAULT_STORE_CONFIG: StoreConfig = {
   whatsappNumber: '527225628061',
   address: 'Toluca, Estado de México',
   city: 'Toluca y alrededores',
-  announcementText: 'Toluca y alrededores • Pedidos con anticipación',
+  announcementText: '',
   bannerVisible: true,
   isStoreOpen: true,
   adminPin: '2026',

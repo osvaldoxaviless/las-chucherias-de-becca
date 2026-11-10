@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowDown, Sparkles, Edit3 } from 'lucide-react';
 import { StoreConfig } from '../types';
-import { HeroPastryStickers } from './HeroPastryStickers';
+import { HeroPastryPhotos } from './HeroPastryPhotos';
 
 interface Props {
   config: StoreConfig;
@@ -21,8 +21,8 @@ export const Hero: React.FC<Props> = ({
   return (
     <section className="relative overflow-hidden bg-[#f5f4f0] border-b border-black/10 py-16 sm:py-24">
       
-      {/* Stickers e Ilustraciones Artesanales Animadas (Cupcake, Bento Cake, Fresa) */}
-      <HeroPastryStickers />
+      {/* Fotografías Reales de Postres con Fondo Blanco (Pasteles y Galletas de Becca) */}
+      <HeroPastryPhotos />
 
       {/* Hatch Confetti Dots decorativos con temática pastel unicornio (DESIGN.md) */}
       <div className="absolute top-10 left-10 w-3 h-3 rounded-full bg-[#ff99cc] pointer-events-none hidden sm:block" />
@@ -33,15 +33,6 @@ export const Hero: React.FC<Props> = ({
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 text-center space-y-6">
         
-        {/* Mobile cute bakery badge */}
-        <div className="flex md:hidden items-center justify-center gap-2 pt-1 animate-float-gentle select-none">
-          <span className="text-xl">🧁</span>
-          <span className="text-[11px] font-black tracking-wide px-3 py-0.5 rounded-full bg-white border border-black shadow-xs">
-            Horneado con amor • Toluca
-          </span>
-          <span className="text-xl">🎂</span>
-        </div>
-
         {/* Chip Lúdico Superior */}
         {isEditMode ? (
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border-2 border-dashed border-black/60 shadow-xs">

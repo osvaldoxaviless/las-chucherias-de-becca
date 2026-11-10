@@ -47,8 +47,8 @@ export function App() {
       const saved = localStorage.getItem('chuches_config');
       if (!saved) return DEFAULT_STORE_CONFIG;
       const parsed = JSON.parse(saved);
-      if (parsed.announcementText === 'Envíos en Toluca & Metepec o retiro en taller. Pedidos con anticipación.') {
-        parsed.announcementText = DEFAULT_STORE_CONFIG.announcementText;
+      if (parsed.announcementText === 'Envíos en Toluca & Metepec o retiro en taller. Pedidos con anticipación.' || parsed.announcementText === 'Toluca y alrededores • Pedidos con anticipación') {
+        parsed.announcementText = '';
       }
       if (parsed.city === 'Toluca y Metepec') {
         parsed.city = DEFAULT_STORE_CONFIG.city;

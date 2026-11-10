@@ -32,19 +32,19 @@ export const Navbar: React.FC<Props> = ({
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
           
-          {/* LADO IZQUIERDO: MARCA LIMPIA (Fiel a Hatch, nunca se trunca) */}
+          {/* LADO IZQUIERDO: MARCA LIMPIA */}
           <div 
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group flex-shrink-0" 
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0" 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-black bg-white flex-shrink-0">
+            <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-black bg-white flex-shrink-0">
               <img 
                 src="/images/becca-logo.jpg" 
                 alt="Logo Las chucherías de Becca" 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               />
             </div>
-            <span className="font-recoleta font-bold text-lg sm:text-2xl text-black tracking-tight whitespace-nowrap">
+            <span className="font-recoleta font-bold text-sm xs:text-base sm:text-2xl text-black tracking-tight whitespace-nowrap truncate max-w-[170px] xs:max-w-[220px] sm:max-w-none">
               {config.storeName}
             </span>
           </div>
@@ -89,7 +89,7 @@ export const Navbar: React.FC<Props> = ({
             </nav>
 
             {/* Grupo de Acciones: WhatsApp y Carrito */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
               {/* WhatsApp direct pill */}
               <a
                 href={`https://wa.me/${config.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('¡Hola Becca! Vengo de tu página web y me gustaría información de tus postres.')}`}
@@ -102,16 +102,17 @@ export const Navbar: React.FC<Props> = ({
                 <span>WhatsApp</span>
               </a>
 
-              {/* Botón de Pedido estilo Hatch (Mint Pill CTA) */}
+              {/* Botón de Pedido estilo Hatch: En celular solo muestra la bolsita, en desktop muestra 'Pedido' o el total */}
               <button
                 onClick={onOpenCart}
-                className="relative flex items-center gap-2 px-4 py-2 rounded-full bg-[#99ffcc] hover:bg-[#80ffbf] text-black border border-black font-bold text-xs transition-all active:scale-95 shadow-xs"
+                className="relative flex items-center justify-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-2 rounded-full bg-[#99ffcc] hover:bg-[#80ffbf] text-black border border-black font-bold text-xs transition-all active:scale-95 shadow-xs"
                 aria-label="Abrir carrito"
+                title="Ver carrito de pedido"
               >
-                <ShoppingBag className="w-4 h-4 text-black" />
-                <span>{cartCount > 0 ? `$${cartTotal.toLocaleString('es-MX')}` : 'Pedido'}</span>
+                <ShoppingBag className="w-4 h-4 text-black flex-shrink-0" />
+                <span className="hidden sm:inline">{cartCount > 0 ? `$${cartTotal.toLocaleString('es-MX')}` : 'Pedido'}</span>
                 {cartCount > 0 && (
-                  <span className="w-4 h-4 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center ml-0.5">
+                  <span className="w-4 h-4 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -120,7 +121,7 @@ export const Navbar: React.FC<Props> = ({
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-xl text-black border border-black bg-[#f5f4f0] min-w-[44px] min-h-[44px] flex items-center justify-center active:scale-95"
+                className="md:hidden p-2 rounded-xl text-black border border-black bg-[#f5f4f0] min-w-[44px] min-h-[44px] flex items-center justify-center active:scale-95 flex-shrink-0"
                 aria-label={mobileMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
